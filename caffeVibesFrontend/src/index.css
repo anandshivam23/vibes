@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark Theme (Default) */
+    --background: 18 14 11;
+    --surface: 28 22 18;
+    --surface-hover: 38 29 23;
+    --primary: 212 163 115;
+    --primary-hover: 229 178 132;
+    --text-main: 243 235 225;
+    --text-muted: 163 156 150;
+  }
+
+  html.light {
+    /* Premium 'Macchiato & Oat' Light Theme */
+    --background: 250 248 245; /* Soft, incredibly warm oat cream */
+    --surface: 255 255 255; /* Crisp pure white for cards */
+    --surface-hover: 242 238 233; /* Elegant milky beige for hovering */
+    --primary: 191 123 79; /* Sophisticated camel / burnt terracotta */
+    --primary-hover: 166 102 61; /* Deepened terracotta */
+    --text-main: 51 39 31; /* Wealthy, deep mocha espresso (softer than black) */
+    --text-muted: 138 122 110; /* Articulate earthy taupe */
+  }
+
+  html {
+    /* Smooth scrolling everywhere */
+    scroll-behavior: smooth;
+    /* Safe area for notched / foldable phones */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  body {
+    @apply bg-background text-text-main font-sans antialiased overflow-x-hidden;
+    /* Prevent rubber-band scroll on iOS */
+    overscroll-behavior: none;
+  }
+
+  * {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    /* Smoother tap on touch devices */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
+
+@layer utilities {
+  /* ---------- Scrollbar ---------- */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------- Safe-area helpers ---------- */
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top:    env(safe-area-inset-top);    }
+
+  /* ---------- Text helpers ---------- */
+  .overflow-wrap-anywhere { overflow-wrap: anywhere; }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #D4A373, #E5B284);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ---------- Glass ---------- */
+  .glass {
+    background: rgba(var(--surface), 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(var(--text-main), 0.08); /* Dynamic border */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); /* Soft depth */
+  }
+
+  /* ---------- Touch target minimum (WCAG) ---------- */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* ---------- Responsive typography ---------- */
+  .text-fluid-sm  { font-size: clamp(0.75rem,  1.5vw, 0.875rem); }
+  .text-fluid-base{ font-size: clamp(0.875rem, 2vw,   1rem);     }
+  .text-fluid-lg  { font-size: clamp(1rem,     2.5vw, 1.25rem);  }
+  .text-fluid-xl  { font-size: clamp(1.25rem,  3vw,   1.5rem);   }
+  .text-fluid-2xl { font-size: clamp(1.5rem,   4vw,   2rem);     }
+  .text-fluid-4xl { font-size: clamp(1.75rem,  5vw,   2.5rem);   }
+  .text-fluid-5xl { font-size: clamp(2rem,     6vw,   3rem);     }
+}
+
+/* ---------- Thin global scrollbar ---------- */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #3a2e26; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #D4A373; }
+
+/* ---------- Global transitions ---------- */
+button, a {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow, filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+:focus-visible {
+  outline: 2px solid #D4A373;
+  outline-offset: 2px;
+}
+
+/* ---------- Video controls ---------- */
+video::-webkit-media-controls-panel {
+  background-color: rgba(18, 14, 11, 0.85);
+}
+
+/* ---------- Column grid ---------- */
+.columns-1 > *, .columns-2 > *, .columns-3 > *, .columns-4 > * {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
