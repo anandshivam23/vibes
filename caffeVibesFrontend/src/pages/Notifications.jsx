@@ -92,8 +92,9 @@ export default function Notifications() {
 
   const getRedirectLink = (notif) => {
     if (notif.video) return `/video/${notif.video}`;
-    if (notif.tweet) return `/`; {}
-    return `/profile/${notif.senderDetails.username}`;
+    if (notif.tweet) return `/tweets`;
+    if (notif.senderDetails?.username) return `/profile/${notif.senderDetails.username}`;
+    return '/';
   };
 
   if (!currentUser) return (
@@ -181,10 +182,12 @@ export default function Notifications() {
                    )}
                    <Link 
                      to={getRedirectLink(notif)}
-                     onClick={() => !notif.isRead && markAsRead(notif._id)}
-                     className="p-2.5 rounded-xl bg-text-main/[0.05] text-text-muted hover:text-primary hover:bg-text-main/[0.1] transition-all touch-target"
+                     onClick={(e) => {
+                       if (!notif.isRead) markAsRead(notif._id);
+                     }}
+                     className="p-3 rounded-xl bg-text-main/[0.05] text-text-muted hover:text-primary hover:bg-text-main/[0.1] transition-all touch-target"
                    >
-                     <LinkIcon size={16} />
+                     <LinkIcon size={18} />
                    </Link>
                 </div>
               </motion.div>

@@ -105,7 +105,10 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
         </div>
 
         <div className="p-4 border-t border-surface-hover bg-surface/50">
-          <div className="flex gap-2">
+          <form 
+            onSubmit={(e) => { e.preventDefault(); handleCreatePlaylist(); }} 
+            className="flex gap-2"
+          >
              <div className="flex-1 flex flex-col gap-2">
                <input
                  type="text"
@@ -124,13 +127,13 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
                </select>
              </div>
              <button
-               onClick={handleCreatePlaylist}
+               type="submit"
                disabled={!newPlaylistName.trim() || isCreating}
                className="bg-primary hover:bg-primary-hover disabled:opacity-50 text-background p-2 rounded-lg flex items-center justify-center transition-colors"
              >
                 {isCreating ? <Loader2 size={18} className="animate-spin" /> : <Plus size={18} strokeWidth={2.5} />}
              </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
