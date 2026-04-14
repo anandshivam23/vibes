@@ -220,9 +220,17 @@ export default function Register() {
                   <Upload size={16} className="shrink-0 text-primary" />
                   <span className="truncate">{avatar ? avatar.name : 'Choose file'}</span>
                   <input
-                    id="register-avatar"
-                    type="file"
-                    accept="image}
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      setAvatar(file);
+                      setAvatarPreview(URL.createObjectURL(file));
+                    }}
+                    className="hidden"
+                  />
+                </label>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-1.5">Cover Image</label>
                 {coverPreview && (
