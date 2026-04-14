@@ -216,10 +216,14 @@ export default function Register() {
                     </button>
                   </div>
                 )}
-                <label className="flex items-center justify-center gap-2 cursor-pointer bg-background border border-surface-hover rounded-xl px-4 py-2.5 text-sm text-text-muted hover:border-primary transition-all text-center">
-                  <Upload size={16} className="shrink-0 text-primary" />
-                  <span className="truncate">{avatar ? avatar.name : 'Choose file'}</span>
+                <div className="relative">
+                  <div className="flex items-center justify-center gap-2 bg-background border border-surface-hover rounded-xl px-4 py-2.5 text-sm text-text-muted hover:border-primary transition-all text-center">
+                    <Upload size={16} className="shrink-0 text-primary" />
+                    <span className="truncate">{avatar ? avatar.name : 'Choose avatar *'}</span>
+                  </div>
                   <input
+                    id="register-avatar"
+                    type="file"
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files[0];
@@ -227,9 +231,10 @@ export default function Register() {
                       setAvatar(file);
                       setAvatarPreview(URL.createObjectURL(file));
                     }}
-                    className="hidden"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    required
                   />
-                </label>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-1.5">Cover Image</label>
@@ -245,9 +250,11 @@ export default function Register() {
                     </button>
                   </div>
                 )}
-                <label className="flex items-center justify-center gap-2 cursor-pointer bg-background border border-surface-hover rounded-xl px-4 py-2.5 text-sm text-text-muted hover:border-primary transition-all text-center">
-                  <Upload size={16} className="shrink-0 text-primary" />
-                  <span className="truncate">{coverImage ? coverImage.name : 'Choose file'}</span>
+                <div className="relative">
+                  <div className="flex items-center justify-center gap-2 bg-background border border-surface-hover rounded-xl px-4 py-2.5 text-sm text-text-muted hover:border-primary transition-all text-center">
+                    <Upload size={16} className="shrink-0 text-primary" />
+                    <span className="truncate">{coverImage ? coverImage.name : 'Choose cover'}</span>
+                  </div>
                   <input
                     id="register-cover"
                     type="file"
@@ -258,9 +265,9 @@ export default function Register() {
                       setCoverImage(file);
                       setCoverPreview(URL.createObjectURL(file));
                     }}
-                    className="hidden"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
-                </label>
+                </div>
               </div>
             </div>
             <button

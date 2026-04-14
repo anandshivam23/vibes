@@ -162,11 +162,11 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                         <span className="text-xs">No cover image</span>
                       </div>
                     )}
-                    <label htmlFor="cover-upload" className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Camera size={22} className="text-white mr-2" />
                       <span className="text-white text-sm font-semibold">Change Cover</span>
-                    </label>
-                    <input id="cover-upload" type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
+                    </div>
+                    <input id="cover-upload" type="file" accept="image/*" onChange={handleCoverChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
                   </div>
                 </div>
                 <div className="flex items-center gap-5">
@@ -175,10 +175,10 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                       ? <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                       : <div className="w-full h-full bg-surface-hover flex items-center justify-center"><User size={32} className="text-text-muted" /></div>
                     }
-                    <label htmlFor="avatar-upload" className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                       <Camera size={20} className="text-white" />
-                    </label>
-                    <input id="avatar-upload" type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+                    </div>
+                    <input id="avatar-upload" type="file" accept="image/*" onChange={handleAvatarChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20 rounded-full" />
                   </div>
                   <div>
                     <p className="font-bold text-text-main">Profile Photo</p>
