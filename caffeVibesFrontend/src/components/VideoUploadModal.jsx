@@ -2,22 +2,18 @@ import React, { useState } from 'react';
 import { X, UploadCloud, Loader2 } from 'lucide-react';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
-
 export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
-
   if (!isOpen) return null;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !description || !videoFile) {
       return toast.error("Title, description and video file are required");
     }
-
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -25,7 +21,6 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
     if (thumbnailFile) {
         formData.append('thumbnail', thumbnailFile);
     }
-
     try {
       setIsPublishing(true);
       const res = await api.post('/videos', formData, {
@@ -34,7 +29,6 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
       toast.success("Video published successfully");
       onUploadSuccess(res.data.data);
       onClose();
-
       setTitle('');
       setDescription('');
       setVideoFile(null);
@@ -45,7 +39,6 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
       setIsPublishing(false);
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-surface border border-surface-hover rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-fade-in">
@@ -55,7 +48,6 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
             <X size={20} />
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-text-muted mb-1">Title *</label>
@@ -97,7 +89,6 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
                 />
              </div>
           </div>
-
           <div className="pt-4 flex justify-end gap-3 border-t border-surface-hover mt-6">
              <button type="button" onClick={onClose} className="px-5 py-2 rounded-lg font-medium hover:bg-surface-hover transition-colors">
                Cancel
@@ -110,4 +101,4 @@ export default function VideoUploadModal({ isOpen, onClose, onUploadSuccess }) {
       </div>
     </div>
   );
-}
+}

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Trash2, Loader2, Coffee } from 'lucide-react';
 import api from '../api/axios';
-
 const TypingIndicator = () => (
   <div className="flex items-center gap-1.5 px-4 py-3">
     <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -10,9 +9,7 @@ const TypingIndicator = () => (
     <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
   </div>
 );
-
 const SYSTEM_CONTEXT = `You are Brew, the friendly AI assistant for Caffe Vibes — a social video sharing platform inspired by coffee culture.
-
 Caffe Vibes features:
 - Upload and watch videos
 - Post tweets/thoughts (called "vibes")
@@ -23,13 +20,11 @@ Caffe Vibes features:
 - Real-time updates via WebSockets
 - Search for videos and users
 - Coffee Recipes section
-
 Rules:
 - Be friendly, warm, and use coffee-related puns occasionally
 - Only help with questions about Caffe Vibes features
 - If asked something unrelated, politely redirect with a coffee pun
 - Keep responses concise (2-4 sentences)`;
-
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -42,41 +37,34 @@ export default function ChatbotWidget() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-
   useEffect(() => {
     if (isOpen && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping, isOpen]);
-
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
-
   const handleSend = async () => {
     const text = input.trim();
     if (!text || isTyping) return;
-
     const userMsg = { role: 'user', content: text };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
-
     try {
       const conversationToSend = [
         ...messages.filter(m => m.role !== 'system'),
         userMsg
       ].map(m => ({ role: m.role, content: m.content }));
-
       const res = await api.post('/chat', { messages: conversationToSend });
       const reply = res.data.data || "I'm having a bit of a coffee break right now! Try again in a moment. ☕";
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch (err) {
       const errMsg = err?.response?.data?.message || err?.message || '';
       let friendlyMsg = "Oops! Looks like my espresso machine is down. 😅 Please try again shortly.";
-
       if (errMsg.includes('GEMINI_API_KEY') || errMsg.includes('not configured') || errMsg.includes('invalid_api_key')) {
         friendlyMsg = "⚠️ The AI service isn't configured yet. Please add a valid GEMINI_API_KEY to the backend .env file to enable Brew AI.";
       } else if (errMsg.includes('Too many requests') || errMsg.includes('429')) {
@@ -84,30 +72,25 @@ export default function ChatbotWidget() {
       } else if (errMsg.includes('quota') || errMsg.includes('billing')) {
         friendlyMsg = "⚠️ The AI service account has reached its quota. Please check your Google Cloud billing.";
       }
-
       setMessages(prev => [...prev, { role: 'assistant', content: friendlyMsg }]);
     } finally {
       setIsTyping(false);
     }
   };
-
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
-
   const clearChat = () => {
     setMessages([{
       role: 'assistant',
       content: "Chat cleared! Fresh start — just like a new brew. ☕ How can I help?"
     }]);
   };
-
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3">
-      {}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -118,7 +101,6 @@ export default function ChatbotWidget() {
             className="w-[calc(100vw-2rem)] sm:w-[380px] bg-surface border border-surface-hover rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             style={{ height: 'min(520px, calc(100dvh - 5.5rem))', maxHeight: '90dvh' }}
           >
-            {}
             <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/20 to-primary/5 border-b border-surface-hover flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
@@ -148,8 +130,6 @@ export default function ChatbotWidget() {
                 </button>
               </div>
             </div>
-
-            {}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-hide">
               {messages.map((msg, i) => (
                 <motion.div
@@ -159,7 +139,6 @@ export default function ChatbotWidget() {
                   transition={{ duration: 0.25 }}
                   className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  {}
                   <div className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
                     msg.role === 'user'
                       ? 'bg-primary/20 text-primary border border-primary/30'
@@ -167,8 +146,6 @@ export default function ChatbotWidget() {
                   }`}>
                     {msg.role === 'user' ? <User size={14} /> : <Coffee size={14} />}
                   </div>
-
-                  {}
                   <div className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-primary text-background rounded-tr-sm font-medium'
@@ -178,8 +155,6 @@ export default function ChatbotWidget() {
                   </div>
                 </motion.div>
               ))}
-
-              {}
               {isTyping && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -196,8 +171,6 @@ export default function ChatbotWidget() {
               )}
               <div ref={messagesEndRef} />
             </div>
-
-            {}
             <div className="px-3 py-3 border-t border-surface-hover flex-shrink-0">
               <div className="flex items-center gap-2 bg-background border border-surface-hover rounded-xl px-3 py-2 focus-within:border-primary/50 transition-colors">
                 <textarea
@@ -225,8 +198,6 @@ export default function ChatbotWidget() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {}
       <motion.button
         onClick={() => setIsOpen(prev => !prev)}
         whileHover={{ scale: 1.05 }}
@@ -245,12 +216,10 @@ export default function ChatbotWidget() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {}
         {!isOpen && (
           <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-background"></span>
         )}
       </motion.button>
     </div>
   );
-}
+}

@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import VideoUploadModal from './VideoUploadModal';
 import TweetModal from './TweetModal';
-
 export default function TopNav({ onMenuClick }) {
   const [isUploading, setIsUploading] = useState(false);
   const { currentUser, logout } = useAuth();
@@ -15,17 +14,14 @@ export default function TopNav({ onMenuClick }) {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isTweetModalOpen, setIsTweetModalOpen] = useState(false);
   const searchRef = useRef(null);
-
   const handleCreateTweetClick = () => {
     if (!currentUser) { navigate('/login'); return; }
     setIsTweetModalOpen(true);
   };
-
   const handleUploadVideoClick = () => {
     if (!currentUser) { navigate('/login'); return; }
     setIsVideoModalOpen(true);
   };
-
   const handleSearch = (e) => {
     e.preventDefault();
     const q = searchQuery.trim();
@@ -34,17 +30,13 @@ export default function TopNav({ onMenuClick }) {
     setSearchQuery('');
     setShowMobileSearch(false);
   };
-
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
-
   return (
     <>
       <CoffeeLoader isLoading={isUploading} fullScreen={true} />
-
-      {/* ── Mobile full-screen search overlay ── */}
       {showMobileSearch && (
         <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-xl flex items-start p-4 pt-5">
           <form onSubmit={handleSearch} className="w-full flex items-center gap-2">
@@ -70,11 +62,7 @@ export default function TopNav({ onMenuClick }) {
           </form>
         </div>
       )}
-
-      {/* ── Main header ── */}
       <header className="h-14 sm:h-16 border-b border-surface-hover/30 bg-background/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-2 sm:px-4 lg:px-8 gap-2 w-full">
-
-        {/* Left: Hamburger + Logo */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-0">
           <button
             onClick={onMenuClick}
@@ -92,8 +80,6 @@ export default function TopNav({ onMenuClick }) {
             <span className="font-display font-black text-sm sm:text-base tracking-tight text-text-main hidden xs:block">Caffe Vibes</span>
           </Link>
         </div>
-
-        {/* Center: Desktop search bar */}
         <form onSubmit={handleSearch} className="flex-1 max-w-2xl relative group hidden sm:block">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted/60 group-focus-within:text-primary transition-colors">
             <Search size={16} />
@@ -106,11 +92,7 @@ export default function TopNav({ onMenuClick }) {
             className="w-full bg-surface/40 border border-surface-hover/50 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 focus:bg-surface/80 transition-all placeholder-text-muted/40 text-text-main"
           />
         </form>
-
-        {/* Right: Action buttons — collapses smartly on mobile */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-
-          {/* Mobile search toggle */}
           <button
             onClick={() => setShowMobileSearch(true)}
             className="sm:hidden w-8 h-8 flex items-center justify-center text-text-muted hover:text-primary transition-all rounded-xl"
@@ -118,8 +100,6 @@ export default function TopNav({ onMenuClick }) {
           >
             <Search size={18} />
           </button>
-
-          {/* Create post — hidden on mobile */}
           <button
             onClick={handleCreateTweetClick}
             className="hidden md:flex w-9 h-9 rounded-xl bg-surface/40 border border-surface-hover/60 items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all group"
@@ -128,8 +108,6 @@ export default function TopNav({ onMenuClick }) {
           >
             <Feather size={16} className="group-hover:scale-110 transition-transform" />
           </button>
-
-          {/* Upload video — hidden on mobile */}
           <button
             onClick={handleUploadVideoClick}
             className="hidden sm:flex w-9 h-9 rounded-xl bg-surface/40 border border-surface-hover/60 items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all group"
@@ -138,8 +116,6 @@ export default function TopNav({ onMenuClick }) {
           >
             <Video size={16} className="group-hover:scale-110 transition-transform" />
           </button>
-
-          {/* Notifications bell */}
           <Link
             to="/notifications"
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-surface/40 border border-surface-hover/60 flex items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all relative group"
@@ -151,11 +127,8 @@ export default function TopNav({ onMenuClick }) {
               <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full border border-background" />
             )}
           </Link>
-
-          {/* ── Logged-in state ── */}
           {currentUser ? (
             <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-text-main/10">
-              {/* Avatar */}
               <Link
                 to={`/profile/${currentUser.username}`}
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-surface-hover/60 hover:border-primary shadow-lg hover:scale-105 active:scale-95 transition-all shrink-0"
@@ -167,8 +140,6 @@ export default function TopNav({ onMenuClick }) {
                   className="w-full h-full object-cover"
                 />
               </Link>
-
-              {/* Logout — icon only on mobile, text on desktop */}
               <button
                 onClick={handleLogout}
                 className="flex items-center justify-center gap-1.5 h-8 sm:h-9 px-2 sm:px-3 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-200 border border-red-500/20 active:scale-95 shrink-0"
@@ -179,7 +150,6 @@ export default function TopNav({ onMenuClick }) {
               </button>
             </div>
           ) : (
-            /* ── Logged-out state ── */
             <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-text-main/10">
               <Link
                 to="/login"
@@ -197,7 +167,6 @@ export default function TopNav({ onMenuClick }) {
           )}
         </div>
       </header>
-
       <VideoUploadModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
@@ -209,4 +178,4 @@ export default function TopNav({ onMenuClick }) {
       />
     </>
   );
-}
+}

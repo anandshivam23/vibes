@@ -3,37 +3,30 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Home, UserCheck, PlaySquare, Heart, Info, FileText, ThumbsDown, Coffee, X, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-
 export default function Sidebar({ isOpen, onClose }) {
   const { currentUser } = useAuth();
   const { theme, setTheme } = useTheme();
   const location = useLocation();
-
   const mainMenu = [
     { label: 'Home', icon: Home, path: '/' },
   ];
-
   const personalMenu = [
     { label: 'Subscriptions', icon: UserCheck, path: '/subscriptions' },
     { label: 'Playlists', icon: PlaySquare, path: '/playlists' },
     { label: 'Liked', icon: Heart, path: '/liked' },
     { label: 'Disliked', icon: ThumbsDown, path: '/disliked' },
   ];
-
   const footerMenu = [
     { label: 'About', icon: Info, path: '/about' },
     { label: 'Terms', icon: FileText, path: '/terms' },
   ];
-
   const isActiveRoute = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
-
   const handleNavClick = () => {
     if (window.innerWidth < 1024) onClose();
   };
-
   const renderNavGroup = (items) => (
     <nav className="flex flex-col space-y-0.5 w-full px-2 mb-2">
       {items.map((item) => {
@@ -55,14 +48,12 @@ export default function Sidebar({ isOpen, onClose }) {
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
             )}
             <Icon size={18} className={`flex-shrink-0 ${active ? 'text-primary' : ''}`} />
-            {/* Always show label when sidebar is open on mobile */}
             <span className="truncate">{item.label}</span>
           </NavLink>
         );
       })}
     </nav>
   );
-
   return (
     <aside className={`
       fixed lg:relative inset-y-0 left-0 z-50 lg:z-0
@@ -72,7 +63,6 @@ export default function Sidebar({ isOpen, onClose }) {
       transition-transform duration-300 ease-in-out
       ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
     `}>
-      {/* Brand header */}
       <div className="px-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-background font-bold flex-shrink-0 shadow-xl shadow-primary/20">
@@ -88,27 +78,20 @@ export default function Sidebar({ isOpen, onClose }) {
           <X size={18} />
         </button>
       </div>
-
-      {/* Nav items */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {renderNavGroup(mainMenu)}
-
         <div className="px-4 my-4">
           <div className="h-px bg-gradient-to-r from-transparent via-surface-hover/50 to-transparent" />
         </div>
-
         <p className="px-5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-text-muted/40 mb-2">
           {currentUser ? 'Your Space' : 'Discover'}
         </p>
         {renderNavGroup(personalMenu)}
-
         <div className="px-4 my-4">
           <div className="h-px bg-gradient-to-r from-transparent via-surface-hover/50 to-transparent" />
         </div>
         {renderNavGroup(footerMenu)}
       </div>
-
-      {/* Theme toggler */}
       <div className="mx-2 mb-2 mt-auto px-2">
         <div className="flex items-center gap-1.5 w-full bg-surface/30 border border-surface-hover/40 p-1.5 rounded-[1rem]">
           <button
@@ -123,7 +106,6 @@ export default function Sidebar({ isOpen, onClose }) {
             <Sun size={15} className={theme === 'light' ? 'text-background' : 'text-primary'} />
             <span className="text-xs font-bold">Light</span>
           </button>
-
           <button
             onClick={() => setTheme('dark')}
             className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl transition-all duration-300 ${
@@ -138,8 +120,6 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
       </div>
-
-      {/* User info */}
       {currentUser && (
         <div className="mx-2 mb-3">
           <div className="p-3 bg-surface/40 backdrop-blur-md rounded-[1.25rem] border border-surface-hover/60 hover:bg-surface/60 transition-all group shadow-lg">
@@ -162,10 +142,9 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
         </div>
       )}
-
       <div className="pb-3 pt-1 text-center">
         <p className="text-[9px] font-bold tracking-widest text-text-muted/30 uppercase italic">© 2026 Caffe Vibes</p>
       </div>
     </aside>
   );
-}
+}

@@ -21,7 +21,6 @@ export const baseData = [
       type: 'tweet', id: 't3', content: 'Starting my day right ☕✨', likes: '45', comments: '2', createdAt: '6 days ago', owner: { id: 'u8', name: 'Morning Person', username: 'morning_person', avatar: 'https://i.pravatar.cc/150?u=u8' }
     }
   ];
-
   const jokesPool = [
       "Why did the coffee file a police report? It got mugged! 😂☕",
       "How does a tech guy drink coffee? He installs Java! 💻☕",
@@ -34,7 +33,6 @@ export const baseData = [
       "Procaffeinating: The tendency to not start anything until you've had a cup of coffee. 📝",
       "What's a coffee's favorite karaoke song? Hit Me With Your Best Shot! 🎤🎵"
   ];
-
   export const jokesData = Array.from({ length: 50 }, (_, i) => ({
       type: 'tweet',
       id: `joke-${i}`,

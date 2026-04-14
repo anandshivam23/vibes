@@ -5,19 +5,15 @@ import { Loader2, Search, User, Video as VideoIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VideoCard from '../components/VideoCard';
 import EmptyState from '../components/EmptyState';
-
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
-
   const [activeTab, setActiveTab] = useState('All');
   const [videos, setVideos] = useState([]);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     if (!query.trim()) return;
-
     const fetchResults = async () => {
       setIsLoading(true);
       try {
@@ -28,23 +24,17 @@ export default function SearchResults() {
         setVideos(videosRes.data.data?.docs || videosRes.data.data?.videos || []);
         setUsers(usersRes.data.data || []);
       } catch (err) {
-
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchResults();
   }, [query]);
-
   const tabs = ['All', 'Videos', 'Channels'];
-
   const filteredVideos = activeTab === 'Videos' || activeTab === 'All' ? videos : [];
   const filteredUsers = activeTab === 'Channels' || activeTab === 'All' ? users : [];
-
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-0 py-6 animate-fade-in">
-      {}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -60,8 +50,6 @@ export default function SearchResults() {
           </div>
         </div>
       </div>
-
-      {}
       <div className="flex items-center gap-2 mb-8 border-b border-surface-hover pb-1">
         {tabs.map((tab) => (
           <button
@@ -83,14 +71,12 @@ export default function SearchResults() {
           </button>
         ))}
       </div>
-
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
           <Loader2 size={36} className="animate-spin text-primary" />
         </div>
       ) : (
         <div className="space-y-10">
-          {}
           {filteredUsers.length > 0 && (
             <section>
               <h2 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
@@ -127,8 +113,6 @@ export default function SearchResults() {
               </div>
             </section>
           )}
-
-          {}
           {filteredVideos.length > 0 && (
             <section>
               <h2 className="text-lg font-bold text-text-main mb-4 flex items-center gap-2">
@@ -163,8 +147,6 @@ export default function SearchResults() {
               </div>
             </section>
           )}
-
-          {}
           {!isLoading && filteredVideos.length === 0 && filteredUsers.length === 0 && (
             <div className="py-20 flex flex-col items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-surface flex items-center justify-center mb-4">
@@ -180,4 +162,4 @@ export default function SearchResults() {
       )}
     </div>
   );
-}
+}

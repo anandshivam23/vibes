@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
 const presets = {
   feed: {
     emoji: '🌌',
@@ -70,14 +69,12 @@ const presets = {
     action: { label: 'Vibe In Now', to: '/login' },
   },
 };
-
 export default function EmptyState({ type = 'feed', title, desc, emoji, action }) {
   const preset = presets[type] || presets.feed;
   const displayEmoji = emoji || preset.emoji;
   const displayTitle = title || preset.title;
   const displayDesc = desc || preset.desc;
   const displayAction = action !== undefined ? action : preset.action;
-
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -88,7 +85,6 @@ export default function EmptyState({ type = 'feed', title, desc, emoji, action }
         className="flex flex-col items-center justify-center py-16 md:py-32 px-5 md:px-10 text-center bg-text-main/[0.01] backdrop-blur-3xl border border-text-main/5 rounded-[2rem] md:rounded-[4rem] w-full shadow-2xl relative overflow-hidden group mb-12"
       >
         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-10" />
-        
         <motion.div 
           animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -96,15 +92,12 @@ export default function EmptyState({ type = 'feed', title, desc, emoji, action }
         >
           {displayEmoji}
         </motion.div>
-
         <h3 className="text-3xl md:text-5xl font-display font-black text-text-main mb-4 tracking-tighter">
           {displayTitle}
         </h3>
-        
         <p className="text-xs md:text-lg text-text-muted/40 max-w-md leading-relaxed mb-12 font-bold uppercase tracking-widest md:tracking-[0.3em] px-2 md:px-4 break-words w-full">
           {displayDesc}
         </p>
-
         {displayAction && (
           <Link
             to={displayAction.to}
@@ -116,4 +109,4 @@ export default function EmptyState({ type = 'feed', title, desc, emoji, action }
       </motion.div>
     </AnimatePresence>
   );
-}
+}

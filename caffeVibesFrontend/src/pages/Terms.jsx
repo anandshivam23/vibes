@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function Terms() {
   return (
     <div className="animate-fade-in max-w-4xl mx-auto py-12 px-6">
@@ -12,7 +11,6 @@ export default function Terms() {
             If you do not agree to abide by these terms, please do not use this service.
           </p>
         </section>
-
         <section>
           <h2 className="text-2xl font-display font-bold text-text-main mb-4">2. Community Guidelines</h2>
           <p className="text-text-muted leading-relaxed">
@@ -21,7 +19,6 @@ export default function Terms() {
             Keep the content focused on coffee, café culture, and positive vibes.
           </p>
         </section>
-
         <section>
           <h2 className="text-2xl font-display font-bold text-text-main mb-4">3. Content Ownership</h2>
           <p className="text-text-muted leading-relaxed">
@@ -29,7 +26,6 @@ export default function Terms() {
             royalty-free license to display, distribute, and promote your content within the platform.
           </p>
         </section>
-
         <section>
           <h2 className="text-2xl font-display font-bold text-text-main mb-4">4. Privacy & Data</h2>
           <p className="text-text-muted leading-relaxed">
@@ -40,4 +36,4 @@ export default function Terms() {
       </div>
     </div>
   );
-}
+}

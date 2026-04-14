@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { Loader2, PlaySquare, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import EmptyState from '../components/EmptyState';
-
 export default function Playlists() {
   const { currentUser } = useAuth();
   const [playlists, setPlaylists] = useState([]);
@@ -15,12 +14,10 @@ export default function Playlists() {
   const [newDesc, setNewDesc] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
-
   useEffect(() => {
     if (!currentUser) { setIsLoading(false); return; }
     fetchPlaylists();
   }, [currentUser]);
-
   const fetchPlaylists = async () => {
     try {
       const res = await api.get(`/playlist/user/${currentUser._id}`);
@@ -31,7 +28,6 @@ export default function Playlists() {
       setIsLoading(false);
     }
   };
-
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!newName.trim()) return;
@@ -49,7 +45,6 @@ export default function Playlists() {
       setIsCreating(false);
     }
   };
-
   const handleDelete = async (playlistId) => {
     if (!window.confirm('Delete this playlist?')) return;
     try {
@@ -60,7 +55,6 @@ export default function Playlists() {
       toast.error('Failed to delete playlist');
     }
   };
-
   if (!currentUser) {
     return (
       <div className="py-24 flex justify-center w-full">
@@ -68,11 +62,9 @@ export default function Playlists() {
       </div>
     );
   }
-
   if (isLoading) {
     return <div className="flex justify-center py-24"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   }
-
   return (
     <div className="animate-fade-in max-w-7xl mx-auto px-4 md:px-0 pb-10">
       <div className="flex items-center justify-between mt-4 mb-8">
@@ -84,7 +76,6 @@ export default function Playlists() {
           <Plus size={16} /> New Playlist
         </button>
       </div>
-
       {showCreate && (
         <form onSubmit={handleCreate} className="bg-surface border border-primary/30 rounded-2xl p-5 mb-8 flex flex-col gap-3">
           <div className="flex justify-between items-center mb-1">
@@ -93,7 +84,6 @@ export default function Playlists() {
           </div>
           <input type="text" value={newName} onChange={e => setNewName(e.target.value)} placeholder="Playlist name *" className="bg-background border border-surface-hover rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" required />
           <input type="text" value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Description (optional)" className="bg-background border border-surface-hover rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
-          
           <div className="flex flex-col gap-1">
             <label className="text-xs text-text-muted font-bold px-1">Visibility</label>
             <select 
@@ -105,13 +95,11 @@ export default function Playlists() {
               <option value="false">Private (Only you can see)</option>
             </select>
           </div>
-
           <button type="submit" disabled={isCreating || !newName.trim()} className="self-end bg-primary hover:bg-primary-hover text-background font-semibold px-5 py-2 rounded-full text-sm disabled:opacity-50 transition-colors mt-2">
             {isCreating ? <Loader2 size={16} className="animate-spin" /> : 'Create'}
           </button>
         </form>
       )}
-
       {playlists.length === 0 ? (
         <div className="py-20 flex justify-center w-full">
           <EmptyState type="playlists" />
@@ -152,4 +140,4 @@ export default function Playlists() {
       )}
     </div>
   );
-}
+}

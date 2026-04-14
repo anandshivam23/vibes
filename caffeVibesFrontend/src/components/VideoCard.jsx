@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 export default function VideoCard({ video, index, compact }) {
   return (
     <motion.div
@@ -20,9 +19,7 @@ export default function VideoCard({ video, index, compact }) {
           alt={video.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-transparent opacity-90 transition-opacity duration-300"></div>
- 
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-background/10 backdrop-blur-[1px]">
           <motion.div 
             className={`${compact ? 'w-10 h-10 rounded-xl' : 'w-14 h-14 rounded-2xl'} bg-primary shadow-xl flex items-center justify-center text-background`}
@@ -30,12 +27,10 @@ export default function VideoCard({ video, index, compact }) {
             <Play fill="currentColor" size={compact ? 16 : 24} className="translate-x-0.5" />
           </motion.div>
         </div>
- 
         <span className={`absolute bottom-3 right-3 bg-background/90 backdrop-blur-md font-bold uppercase tracking-widest rounded-lg text-text-main shadow-lg border border-text-main/10 ${compact ? 'text-[9px] px-2 py-1' : 'text-[11px] px-3 py-1'}`}>
           {video.duration}
         </span>
       </Link>
- 
       <div className={`flex items-start gap-4 ${compact ? 'px-1' : 'px-2'}`}>
         {!compact && (
           <Link to={`/profile/${video.owner.username || video.owner.id}`} className="flex-shrink-0">
@@ -64,4 +59,4 @@ export default function VideoCard({ video, index, compact }) {
       </div>
     </motion.div>
   );
-}
+}

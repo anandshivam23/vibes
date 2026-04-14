@@ -3,15 +3,12 @@ import { X, Send, Loader2 } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-
 export default function TweetModal({ isOpen, onClose, onSuccess }) {
   const { currentUser } = useAuth();
   const [content, setContent] = useState('');
   const [type, setType] = useState('tweet');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   if (!isOpen) return null;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -29,7 +26,6 @@ export default function TweetModal({ isOpen, onClose, onSuccess }) {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 pt-16">
       <div className="bg-surface border border-surface-hover rounded-2xl w-full max-w-lg shadow-2xl animate-fade-in">
@@ -39,7 +35,6 @@ export default function TweetModal({ isOpen, onClose, onSuccess }) {
             <X size={20} />
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
@@ -55,7 +50,6 @@ export default function TweetModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
           <div className="text-right text-xs text-text-muted">{content.length}/280</div>
-
           <div className="flex items-center justify-between pt-2 border-t border-surface-hover">
             <div className="flex gap-2">
               {['tweet', 'joke'].map(t => (
@@ -81,4 +75,4 @@ export default function TweetModal({ isOpen, onClose, onSuccess }) {
       </div>
     </div>
   );
-}
+}

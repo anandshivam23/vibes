@@ -10,36 +10,28 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import VideoUploadModal from '../components/VideoUploadModal';
 import RightSidebar from '../components/RightSidebar';
-
 export default function Feed() {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { socket } = useSocket();
-
   const isRoot = location.pathname === '/';
   const isTweetsPage = location.pathname === '/tweets';
   const isLikedPage = location.pathname === '/liked';
   const isDislikedPage = location.pathname === '/disliked';
-
   const [activeTab, setActiveTab] = useState(isTweetsPage ? 'Tweets' : 'All Vibes');
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [newPostContent, setNewPostContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const categories = ['All Vibes', 'Videos', 'Tweets', 'Jokes'];
-
   const fetchContent = async () => {
     setIsLoading(true);
     setIsError(false);
-
     try {
       let fetchedContent = [];
-
       if (isLikedPage) {
         if (!currentUser) { setItems([]); setIsLoading(false); return; }
         const res = await api.get('/likes/videos');
@@ -61,9 +53,7 @@ export default function Feed() {
         }).filter(v => v.id);
       }
       else {
-
         const fetchTab = (isTweetsPage && (activeTab === 'All Vibes' || activeTab === 'Videos')) ? 'Tweets' : activeTab;
-
         if (fetchTab === 'All Vibes') {
           const [videosRes, tweetsRes] = await Promise.all([
             api.get('/videos').catch(() => ({ data: { data: { docs: [] } } })),
@@ -85,13 +75,10 @@ export default function Feed() {
           const res = await api.get('/tweets?type=joke');
           fetchedContent = (res.data.data || []).map(t => formatTweet(t));
         }
-
-
         if (isTweetsPage && activeTab !== 'Tweets' && activeTab !== 'Jokes') {
           setActiveTab('Tweets');
         }
       }
-
       setItems(fetchedContent);
     } catch (error) {
       if (error?.response?.status === 401 || error?.response?.status === 404) {
@@ -104,7 +91,6 @@ export default function Feed() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     if (isTweetsPage) {
       setActiveTab('Tweets');
@@ -112,8 +98,6 @@ export default function Feed() {
     setItems([]);
     fetchContent();
   }, [activeTab, location.pathname]);
-
-
   useEffect(() => {
     if (!socket) return;
     const handleNewPost = (post) => {
@@ -143,7 +127,6 @@ export default function Feed() {
       socket.off('postLiked', handlePostLiked);
     };
   }, [socket, activeTab]);
-
   const formatVideo = (v, ownerObj) => {
     if (!v) return null;
     const owner = ownerObj || v.owner || {};
@@ -165,7 +148,6 @@ export default function Feed() {
       }
     };
   };
-
   const formatTweet = (t) => {
     const likes = Array.isArray(t.likes) ? t.likes : [];
     const isLiked = currentUser && likes.some(l => (l.likedBy || l) === currentUser._id || (l.likedBy || l)?.toString() === currentUser._id);
@@ -189,7 +171,6 @@ export default function Feed() {
       }
     };
   };
-
   const handleCreatePost = async (e) => {
     if (e) e.preventDefault();
     if (!currentUser) return toast.error("Please log in to post.");
@@ -207,7 +188,6 @@ export default function Feed() {
       setIsSubmitting(false);
     }
   };
-
   const getEmptyStateType = () => {
     if (!currentUser && (isLikedPage || isDislikedPage)) return 'login';
     if (location.pathname === '/liked') return 'liked';
@@ -218,20 +198,16 @@ export default function Feed() {
     if (activeTab === 'Jokes') return 'jokes';
     return 'feed';
   };
-
   const handleTweetDelete = (tweetId) => setItems(prev => prev.filter(item => item.id !== tweetId));
   const handleTweetUpdate = (tweetId, newContent) => setItems(prev => prev.map(item => item.id === tweetId ? { ...item, content: newContent } : item));
-
   return (
     <div className="min-h-screen w-full relative">
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full animate-pulse-slow" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary-hover/5 blur-[180px] rounded-full animate-pulse-slow animation-delay-2000" />
       </div>
-
       <div className="w-full max-w-screen-xl mx-auto pb-6 animate-fade-in">
         <div className="flex flex-col xl:flex-row gap-6 items-start">
-          
           <div className="flex-1 min-w-0 w-full">
             {isRoot && (
              <div className="flex flex-col gap-1 mb-5 sm:mb-8">
@@ -241,13 +217,11 @@ export default function Feed() {
                  <p className="text-text-muted/40 font-bold uppercase tracking-[0.2em] text-[8px] md:text-[9px] ml-1">The pulse of the universe</p>
                </div>
             )}
-
             {!isRoot && (
               <h2 className="text-xl md:text-2xl font-black font-display text-text-main mb-6 md:mb-8 capitalize tracking-tight pt-1">
                 {location.pathname.substring(1)} Insights
               </h2>
             )}
-
             {isRoot && (
               <div className="flex items-center gap-2 mb-5 sm:mb-6 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {categories.map((cat) => (
@@ -265,7 +239,6 @@ export default function Feed() {
                 ))}
               </div>
             )}
-
             {isRoot && currentUser && (
               <div className="mb-6 sm:mb-8 w-full">
                 {activeTab === 'Videos' ? (
@@ -324,7 +297,6 @@ export default function Feed() {
                 )}
               </div>
             )}
-
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <Loader2 size={40} className="animate-spin text-primary/40" />
@@ -363,13 +335,11 @@ export default function Feed() {
               </div>
             )}
           </div>
-          {/* Right sidebar — desktop only */}
           <div className="hidden xl:block w-80 xl:w-96 shrink-0 sticky top-4 self-start">
             <RightSidebar />
           </div>
         </div>
       </div>
-
       <VideoUploadModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
@@ -377,4 +347,4 @@ export default function Feed() {
       />
     </div>
   );
-}
+}

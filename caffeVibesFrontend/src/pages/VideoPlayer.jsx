@@ -8,7 +8,6 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import PlaylistModal from '../components/PlaylistModal';
 import { toast } from 'react-hot-toast';
-
 const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComments }) => {
   const { currentUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +18,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   const [isLiked, setIsLiked] = useState(comment.isLiked || false);
   const [likesCount, setLikesCount] = useState(comment.likesCount || 0);
-
   const isOwner = currentUser && (
     currentUser._id === (comment.commentor?._id || comment.owner?._id) ||
     currentUser._id === comment.commentor ||
@@ -27,7 +25,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
     currentUser._id?.toString() === comment.commentor?._id?.toString() ||
     currentUser._id?.toString() === comment.owner?._id?.toString()
   );
-
   const handleLike = async () => {
     if (!currentUser) return toast.error("Login to like");
     try {
@@ -39,7 +36,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
       toast.error("Failed to toggle like");
     }
   };
-
   const handleUpdate = async () => {
     if (!editText.trim()) return;
     setIsSaving(true);
@@ -54,7 +50,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
       setIsSaving(false);
     }
   };
-
   const handlePostReply = async () => {
     if (!replyText.trim()) return;
     setIsSubmittingReply(true);
@@ -69,10 +64,8 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
       setIsSubmittingReply(false);
     }
   };
-
   const replies = allComments.filter(c => c.parentComment === comment._id);
   const commentor = comment.commentor || comment.owner;
-
   return (
     <div className={`flex flex-col ${depth > 0 ? 'ml-5 sm:ml-8 mt-2' : 'mt-6'}`}>
       <div className="flex gap-4 group/comment">
@@ -85,7 +78,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
               {commentor?.fullName || commentor?.username}
             </Link>
             <span className="text-[10px] text-text-muted">{new Date(comment.createdAt).toLocaleDateString()}</span>
-
             {isOwner && (
               <div className="ml-auto flex items-center gap-1 opacity-0 group-hover/comment:opacity-100 transition-opacity">
                 {isEditing ? (
@@ -102,7 +94,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
               </div>
             )}
           </div>
-
           {isEditing ? (
             <textarea
               value={editText}
@@ -113,7 +104,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
           ) : (
             <p className="text-sm text-text-main leading-relaxed break-words">{comment.content}</p>
           )}
-
           <div className="flex items-center mt-3 gap-5">
             <button
               onClick={handleLike}
@@ -132,7 +122,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
               <Reply size={depth > 0 ? 14 : 16} /> Reply
             </button>
           </div>
-
           <AnimatePresence>
             {showReplyInput && (
               <motion.div
@@ -159,7 +148,6 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
           </AnimatePresence>
         </div>
       </div>
-
       {replies.length > 0 && (
         <div className="flex flex-col">
           {replies.map(reply => (
@@ -178,14 +166,12 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
     </div>
   );
 };
-
 export default function VideoPlayer() {
   let { id } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { socket } = useSocket();
   const videoMenuRef = useRef(null);
-
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -194,20 +180,16 @@ export default function VideoPlayer() {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
-
   const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(false);
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editDesc, setEditDesc] = useState('');
   const [isSavingVideo, setIsSavingVideo] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [isDeletingVideo, setIsDeletingVideo] = useState(false);
-
   const isVideoOwner = currentUser && video && currentUser._id === video.owner?._id;
-
   useEffect(() => {
     const handler = (e) => {
       if (videoMenuRef.current && !videoMenuRef.current.contains(e.target)) {
@@ -217,14 +199,10 @@ export default function VideoPlayer() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
-
   useEffect(() => {
     if (!socket || !video) return;
-
-
     const handlePostLiked = ({ targetId, liked, type, byUserId }) => {
       if (type === 'video' && targetId === video._id) {
-
         if (currentUser && byUserId === currentUser._id?.toString()) return;
         setVideo(prev => ({
           ...prev,
@@ -234,14 +212,11 @@ export default function VideoPlayer() {
         }));
       }
     };
-
-
     const handleSubUpdate = ({ channelId, subscribersCount }) => {
       if (video.owner && channelId?.toString() === video.owner._id?.toString()) {
         setVideo(prev => ({ ...prev, owner: { ...prev.owner, subscribersCount } }));
       }
     };
-
     socket.on('postLiked', handlePostLiked);
     socket.on('subscriptionUpdate', handleSubUpdate);
     return () => {
@@ -249,7 +224,6 @@ export default function VideoPlayer() {
       socket.off('subscriptionUpdate', handleSubUpdate);
     };
   }, [socket, video, currentUser]);
-
   useEffect(() => {
     const fetchVideoData = async () => {
       setIsLoading(true);
@@ -269,16 +243,13 @@ export default function VideoPlayer() {
     };
     if (id) fetchVideoData();
   }, [id]);
-
   const handleAddComment = async (parentComment = null, content = null) => {
     const text = content || newComment;
     if (!currentUser) return toast.error('Login to comment');
     if (!text.trim()) return;
-
     try {
       const res = await api.post(`/comments/${video._id}`, { content: text, parentComment });
       const newCommentData = res.data.data;
-
       const normalized = {
         ...newCommentData,
         commentor: newCommentData.commentor || newCommentData.owner,
@@ -292,10 +263,8 @@ export default function VideoPlayer() {
       throw e;
     }
   };
-
   const handleLike = async () => {
     if (!currentUser) return toast.error('Login to like');
-
     const wasLiked = isLiked;
     setIsLiked(!wasLiked);
     if (!wasLiked && isDisliked) setIsDisliked(false);
@@ -308,7 +277,6 @@ export default function VideoPlayer() {
     try {
       await api.post(`/likes/toggle/v/${video._id}`);
     } catch (e) {
-
       setIsLiked(wasLiked);
       setVideo(prev => ({
         ...prev,
@@ -319,7 +287,6 @@ export default function VideoPlayer() {
       toast.error('Failed to like');
     }
   };
-
   const handleDislike = async () => {
     if (!currentUser) return toast.error('Login to dislike');
     try {
@@ -328,7 +295,6 @@ export default function VideoPlayer() {
       if (isLiked) setIsLiked(false);
     } catch (e) { toast.error('Failed to dislike'); }
   };
-
   const handleSubscribe = async () => {
     if (!currentUser) return toast.error('Please log in to subscribe');
     if (isSubscribing) return;
@@ -345,7 +311,6 @@ export default function VideoPlayer() {
       setIsSubscribing(false);
     }
   };
-
   const handleDeleteVideo = async () => {
     if (deleteConfirmText !== 'DELETE') return;
     setIsDeletingVideo(true);
@@ -358,7 +323,6 @@ export default function VideoPlayer() {
       setIsDeletingVideo(false);
     }
   };
-
   const handleTogglePublish = async () => {
     try {
       const res = await api.patch(`/videos/toggle/publish/${video._id}`);
@@ -367,14 +331,12 @@ export default function VideoPlayer() {
       setIsVideoMenuOpen(false);
     } catch (e) { toast.error('Failed to toggle publish status'); }
   };
-
   const openEditModal = () => {
     setEditTitle(video.title);
     setEditDesc(video.description);
     setIsEditingVideo(true);
     setIsVideoMenuOpen(false);
   };
-
   const handleUpdateVideo = async (e) => {
     e.preventDefault();
     if (!editTitle.trim()) return toast.error('Title is required');
@@ -393,23 +355,18 @@ export default function VideoPlayer() {
       setIsSavingVideo(false);
     }
   };
-
   if (isLoading) return <div className="w-full h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   if (!video) return <div className="w-full mt-10"><EmptyState type="error" /></div>;
-
   const topLevelComments = comments.filter(c => !c.parentComment);
-
   return (
     <div className="animate-fade-in pb-12 w-full max-w-7xl mx-auto">
       <div className="w-full aspect-video bg-black rounded-xl md:rounded-2xl overflow-hidden shadow-2xl mb-6">
         <video src={video.videoFile} controls className="w-full h-full object-contain" poster={video.thumbnail} />
       </div>
-
       <div className="px-2 md:px-0">
         <h1 className="text-2xl md:text-3xl font-display font-bold text-text-main mb-4 leading-tight">
           {video.title}
         </h1>
-
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-surface-hover/60">
           <div className="flex items-center gap-4">
             <Link to={`/profile/${video.owner.username}`} className="w-12 h-12 rounded-full overflow-hidden border-2 border-transparent hover:border-primary transition-all">
@@ -429,7 +386,6 @@ export default function VideoPlayer() {
               </button>
             )}
           </div>
-
           <div className="flex items-center gap-2">
             <div className="flex bg-surface rounded-full border border-surface-hover overflow-hidden shadow-sm">
               <button onClick={handleLike} className={`flex items-center gap-2 px-5 py-2.5 hover:bg-surface-hover transition-all border-r border-surface-hover ${isLiked ? 'text-primary' : ''}`}>
@@ -440,11 +396,9 @@ export default function VideoPlayer() {
                 <ThumbsDown size={18} className={isDisliked ? 'fill-primary' : ''} />
               </button>
             </div>
-
             <button onClick={() => setIsPlaylistModalOpen(true)} className="flex items-center gap-2 bg-surface hover:bg-surface-hover border border-surface-hover px-5 py-2.5 rounded-full transition-all shadow-sm">
               <BookmarkPlus size={18} /> <span className="text-sm font-bold hidden md:inline">Save</span>
             </button>
-
             {isVideoOwner && (
               <div className="relative" ref={videoMenuRef}>
                 <button onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)} className="bg-surface hover:bg-surface-hover border border-surface-hover w-10 h-10 flex items-center justify-center rounded-full transition-all">
@@ -467,17 +421,14 @@ export default function VideoPlayer() {
             )}
           </div>
         </div>
-
         <div className="bg-surface/40 border border-surface-hover p-5 rounded-2xl mt-6 text-sm">
           <p className="text-text-muted mb-4">{video.views} views • {new Date(video.createdAt).toDateString()}</p>
           <p className="text-text-main leading-relaxed whitespace-pre-wrap font-light">{video.description}</p>
         </div>
-
         <div className="mt-10">
           <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
             {comments.length} Comments
           </h3>
-
           <div className="flex gap-4 mb-10">
             <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-surface-hover">
               <img src={currentUser?.avatar || 'https://i.pravatar.cc/150?img=32'} className="w-full h-full object-cover" />
@@ -500,7 +451,6 @@ export default function VideoPlayer() {
               </button>
             </div>
           </div>
-
           <div className="space-y-2">
             {topLevelComments.length > 0 ? (
               topLevelComments.map(comment => (
@@ -512,7 +462,6 @@ export default function VideoPlayer() {
                   onDelete={async (id) => {
                     try {
                       await api.delete(`/comments/c/${id}`);
-
                       setComments(prev => prev.filter(c => c._id !== id && c.parentComment !== id));
                       toast.success("Comment deleted");
                     } catch (e) {
@@ -530,9 +479,7 @@ export default function VideoPlayer() {
           </div>
         </div>
       </div>
-
       <PlaylistModal isOpen={isPlaylistModalOpen} onClose={() => setIsPlaylistModalOpen(false)} videoId={video._id} />
-
       <AnimatePresence>
         {isEditingVideo && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
@@ -560,7 +507,6 @@ export default function VideoPlayer() {
             </motion.div>
           </motion.div>
         )}
-
         {isDeleteModalOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
             <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-surface border border-surface-hover w-full max-w-sm rounded-2xl p-6 shadow-2xl">
@@ -584,4 +530,4 @@ export default function VideoPlayer() {
       </AnimatePresence>
     </div>
   );
-}
+}

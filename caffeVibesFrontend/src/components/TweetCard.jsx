@@ -5,14 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
-
 const MAX_LINES = 3;
 const CHAR_THRESHOLD = 180;
-
 export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = false }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-
   const [likesCount, setLikesCount] = useState(tweet.likes || tweet.likesCount || 0);
   const [isLiked, setIsLiked] = useState(tweet?.isLiked || false);
   const [isDisliked, setIsDisliked] = useState(tweet?.isDisliked || false);
@@ -22,25 +19,20 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
   const [isSaving, setIsSaving] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const menuRef = useRef(null);
-
-
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   const [replies, setReplies] = useState([]);
   const [showReplies, setShowReplies] = useState(false);
   const [isLoadingReplies, setIsLoadingReplies] = useState(false);
-
   const isOwner = currentUser && (
     currentUser._id === (tweet.owner?.id || tweet.owner?._id || tweet.ownerDetails?._id || tweet.owner) ||
     currentUser._id?.toString() === (tweet.owner?.id || tweet.owner?._id || tweet.ownerDetails?._id || tweet.owner)?.toString()
   );
   const isLong = tweet.content && tweet.content.length > CHAR_THRESHOLD;
-
   useEffect(() => {
     setLikesCount(tweet.likes || tweet.likesCount || 0);
   }, [tweet.likes, tweet.likesCount]);
-
   useEffect(() => {
     const handleClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setIsMenuOpen(false);
@@ -48,7 +40,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
-
   const handleLike = async () => {
     if (!currentUser) return toast.error('Please login to interact');
     const originalLiked = isLiked;
@@ -63,7 +54,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       toast.error('Failed to toggle like');
     }
   };
-
   const handleDislike = async () => {
     if (!currentUser) return toast.error('Please login to interact');
     const originalDisliked = isDisliked;
@@ -76,7 +66,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       toast.error('Failed to toggle dislike');
     }
   };
-
   const handleDelete = async () => {
     setIsMenuOpen(false);
     if (!window.confirm('Delete this tweet?')) return;
@@ -88,7 +77,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       toast.error('Failed to delete tweet');
     }
   };
-
   const handleSaveEdit = async () => {
     if (!editContent.trim()) return;
     setIsSaving(true);
@@ -103,7 +91,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       setIsSaving(false);
     }
   };
-
   const fetchReplies = async () => {
     if (showReplies) { setShowReplies(false); return; }
     setIsLoadingReplies(true);
@@ -117,7 +104,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       setIsLoadingReplies(false);
     }
   };
-
   const handlePostReply = async () => {
     if (!replyContent.trim() || !currentUser) return;
     setIsSubmittingReply(true);
@@ -138,19 +124,16 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
       setIsSubmittingReply(false);
     }
   };
-
   const ownerData = tweet.ownerDetails || tweet.owner;
   const displayContent = isExpanded || !isLong
     ? tweet.content
     : tweet.content.slice(0, CHAR_THRESHOLD) + '…';
-
     const formatDate = (date) => {
       if (!date) return 'Just now';
       const d = new Date(date);
       if (isNaN(d.getTime())) return 'Recently';
       return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
     };
-
     return (
       <div className={`flex flex-col w-full h-full ${isReply ? 'mt-1' : 'mb-px'}`}>
         <motion.div
@@ -161,7 +144,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                      ${isReply ? 'ml-0 p-0 pl-3 sm:pl-5' : 'bg-surface border border-text-main/5 p-3 sm:p-5 md:p-7 rounded-2xl md:rounded-[2.5rem] shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/20'}`}
         >
           <div className="flex gap-3 sm:gap-5 h-full flex-1">
-            {}
             <div className="flex flex-col items-center flex-shrink-0 relative">
               <Link to={`/profile/${ownerData?.username}`} className="relative z-10">
                 <div className={`rounded-xl overflow-hidden border border-text-main/10 group-hover:border-primary/40 transition-all 
@@ -170,22 +152,15 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                 </div>
                 {!isReply && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background" />}
               </Link>
-              
-              {}
               {((showReplies && replies.length > 0) || isReply) && (
                 <div className={`absolute top-0 bottom-0 w-px bg-text-main/10 group-hover:bg-primary/20 transition-colors -z-10
                                 ${isReply ? 'h-full' : 'top-14 h-[5000px]'}`} />
               )}
-
-              {}
               {isReply && (
                 <div className="absolute -left-4 top-5 w-4 h-px bg-text-main/10" />
               )}
             </div>
-
-            {}
             <div className="flex-1 flex flex-col gap-3 min-w-0">
-              {}
               <div className="flex items-center justify-between">
                 <div className="flex flex-col min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
@@ -196,7 +171,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                     <span className="text-[10px] text-text-muted/40 font-bold uppercase tracking-tighter">· {formatDate(tweet.createdAt || tweet.createdAtRaw)}</span>
                   </div>
                 </div>
-
                 {isOwner && (
                   <div className="relative" ref={menuRef}>
                     <button onClick={() => setIsMenuOpen(p => !p)} className="p-2 rounded-xl border border-transparent hover:border-text-main/5 hover:bg-text-main/[0.02] text-text-muted transition-all">
@@ -220,8 +194,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                   </div>
                 )}
               </div>
-
-              {}
               <div className={`text-text-main leading-relaxed tracking-wide font-light break-words overflow-wrap-anywhere whitespace-pre-wrap
                               ${isReply ? 'text-sm' : 'text-sm sm:text-base'}`}>
                 {isEditing ? (
@@ -256,7 +228,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                   </div>
                   <span>{likesCount}</span>
                 </button>
-
                 <button
                   onClick={() => { if (!currentUser) return toast.error('Login to reply'); setShowReplyInput(!showReplyInput); }}
                   className={`flex items-center gap-1.5 group/btn text-[10px] sm:text-[11px] font-bold shrink-0 ${showReplyInput ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
@@ -266,9 +237,7 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                   </div>
                   <span>{tweet.repliesCount || tweet.comments || replies.length || ''}</span>
                 </button>
-
                 <div className="flex-1" />
-
                 <button
                   onClick={fetchReplies}
                   className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-text-muted/40 hover:text-primary transition-colors whitespace-nowrap shrink-0"
@@ -276,8 +245,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                   {isLoadingReplies ? '...' : showReplies ? 'Collapse' : 'Thread'}
                 </button>
               </div>
-
-              {}
               <AnimatePresence>
                 {showReplyInput && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -298,8 +265,6 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              {}
               <AnimatePresence>
                 {showReplies && (
                   <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-text-main/[0.03]">
@@ -318,4 +283,4 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
         </motion.div>
       </div>
     );
-}
+}

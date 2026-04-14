@@ -17,7 +17,6 @@ import About from './pages/About'
 import Terms from './pages/Terms'
 import SearchResults from './pages/SearchResults'
 import Notifications from './pages/Notifications'
-
 function App() {
   return (
     <ThemeProvider>
@@ -36,7 +35,6 @@ function App() {
             <Route path="terms" element={<Terms />} />
             <Route path="search" element={<SearchResults />} />
             <Route path="notifications" element={<Notifications />} />
-            {}
             <Route path="tweets" element={<Feed />} />
             <Route path="subscriptions" element={<Subscriptions />} />
             <Route path="playlists" element={<Playlists />} />
@@ -51,5 +49,4 @@ function App() {
     </ThemeProvider>
   )
 }
-
-export default App
+export default App

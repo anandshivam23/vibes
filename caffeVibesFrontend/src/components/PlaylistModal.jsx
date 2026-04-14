@@ -3,7 +3,6 @@ import { X, Plus, Loader2, Check } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-
 export default function PlaylistModal({ isOpen, onClose, videoId }) {
   const { currentUser } = useAuth();
   const [playlists, setPlaylists] = useState([]);
@@ -11,13 +10,11 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [isPublic, setIsPublic] = useState(true);
-
   useEffect(() => {
     if (isOpen && currentUser) {
       fetchPlaylists();
     }
   }, [isOpen, currentUser]);
-
   const fetchPlaylists = async () => {
     setIsLoading(true);
     try {
@@ -29,7 +26,6 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
       setIsLoading(false);
     }
   };
-
   const handleCreatePlaylist = async () => {
     if (!newPlaylistName.trim()) return;
     setIsCreating(true);
@@ -44,10 +40,8 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
       setIsCreating(false);
     }
   };
-
   const toggleVideoInPlaylist = async (playlist) => {
     const isVideoInPlaylist = playlist.videos.some(v => v._id === videoId || v === videoId || v.id === videoId);
-
     try {
       if (isVideoInPlaylist) {
          await api.patch(`/playlist/remove/${videoId}/${playlist._id}`);
@@ -62,9 +56,7 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
         toast.error("Failed to update playlist");
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-surface border border-surface-hover rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl animate-fade-in flex flex-col max-h-[80vh]">
@@ -74,7 +66,6 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
             <X size={20} />
           </button>
         </div>
-
         <div className="flex-1 overflow-y-auto p-4 space-y-3 relative">
           {isLoading ? (
             <div className="flex justify-center p-4">
@@ -103,7 +94,6 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
             <div className="text-center py-4 text-sm text-text-muted">No playlists found.</div>
           )}
         </div>
-
         <div className="p-4 border-t border-surface-hover bg-surface/50">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleCreatePlaylist(); }} 
@@ -138,4 +128,4 @@ export default function PlaylistModal({ isOpen, onClose, videoId }) {
       </div>
     </div>
   );
-}
+}

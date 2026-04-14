@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function About() {
   return (
     <div className="animate-fade-in max-w-4xl mx-auto py-12 px-6">
@@ -21,4 +20,4 @@ export default function About() {
       </div>
     </div>
   );
-}
+}

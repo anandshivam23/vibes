@@ -7,22 +7,18 @@ import { Loader2, UserCheck, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import EmptyState from '../components/EmptyState';
-
 export default function Subscriptions() {
   const { currentUser } = useAuth();
   const { socket } = useSocket();
   const [channels, setChannels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     if (!currentUser) { setIsLoading(false); return; }
     fetchSubscriptions();
   }, [currentUser]);
-
   const fetchSubscriptions = async () => {
     setIsLoading(true);
     try {
-
       const res = await api.get(`/subscriptions/c/${currentUser._id}`);
       setChannels(res.data.data || []);
     } catch (e) {
@@ -31,17 +27,13 @@ export default function Subscriptions() {
       setIsLoading(false);
     }
   };
-
-
   useEffect(() => {
     if (!socket || !currentUser) return;
     const handleSubUpdate = ({ channelId, isSubscribed, subscribersCount, byUserId }) => {
       if (byUserId?.toString() !== currentUser._id?.toString()) return;
       if (isSubscribed) {
-
         fetchSubscriptions();
       } else {
-
         setChannels(prev => prev.filter(sub => {
           const ch = sub.channel || sub;
           return ch._id?.toString() !== channelId?.toString();
@@ -51,7 +43,6 @@ export default function Subscriptions() {
     socket.on('subscriptionUpdate', handleSubUpdate);
     return () => socket.off('subscriptionUpdate', handleSubUpdate);
   }, [socket, currentUser]);
-
   const handleUnsubscribe = async (channelId) => {
     try {
       await api.post(`/subscriptions/c/${channelId}`);
@@ -64,7 +55,6 @@ export default function Subscriptions() {
       toast.error('Failed to unsubscribe');
     }
   };
-
   if (!currentUser) {
     return (
       <div className="py-24 flex justify-center w-full">
@@ -72,13 +62,11 @@ export default function Subscriptions() {
       </div>
     );
   }
-
   if (isLoading) {
     return (
       <div className="flex justify-center py-24"><Loader2 className="animate-spin text-primary" size={32} /></div>
     );
   }
-
   return (
     <div className="animate-fade-in max-w-7xl mx-auto px-4 md:px-0 pb-10">
       <div className="flex items-center gap-3 mt-4 mb-8">
@@ -90,7 +78,6 @@ export default function Subscriptions() {
           <p className="text-text-muted text-sm">{channels.length} channel{channels.length !== 1 ? 's' : ''} you follow</p>
         </div>
       </div>
-
       {channels.length === 0 ? (
         <div className="py-20 flex justify-center w-full">
            <EmptyState 
@@ -145,4 +132,4 @@ export default function Subscriptions() {
       )}
     </div>
   );
-}
+}

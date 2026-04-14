@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { X, Loader2, Lock, Eye, EyeOff } from 'lucide-react';
 import api from '../api/axios';
 import { toast } from 'react-hot-toast';
-
 export default function ChangePasswordModal({ isOpen, onClose }) {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -10,9 +9,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
   if (!isOpen) return null;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -21,7 +18,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     if (newPassword.length < 6) {
       return toast.error('New password must be at least 6 characters');
     }
-
     setIsSaving(true);
     try {
       await api.post('/users/change-password', {
@@ -30,7 +26,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
       });
       toast.success('Password updated successfully!');
       onClose();
-
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -40,7 +35,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
       setIsSaving(false);
     }
   };
-
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <div className="bg-surface border border-surface-hover rounded-2xl w-full max-w-md shadow-2xl animate-fade-in overflow-hidden">
@@ -53,7 +47,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             <X size={20} />
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="relative">
             <label className="block text-sm font-medium text-text-muted mb-1.5">Current Password</label>
@@ -75,7 +68,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               </button>
             </div>
           </div>
-
           <div className="relative">
             <label className="block text-sm font-medium text-text-muted mb-1.5">New Password</label>
             <div className="relative">
@@ -96,7 +88,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               </button>
             </div>
           </div>
-
           <div>
             <label className="block text-sm font-medium text-text-muted mb-1.5">Confirm New Password</label>
             <input
@@ -108,7 +99,6 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               placeholder="Confirm new password"
             />
           </div>
-
           <div className="flex flex-col gap-3 pt-4">
             <button
               type="submit"
@@ -129,4 +119,4 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
       </div>
     </div>
   );
-}
+}

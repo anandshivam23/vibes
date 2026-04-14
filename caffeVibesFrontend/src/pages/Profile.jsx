@@ -10,7 +10,6 @@ import { Loader2, Pencil, Play, MessageSquare, ListMusic, Heart, Users, Mail, Co
 import { motion, AnimatePresence } from 'framer-motion';
 import VideoCard from '../components/VideoCard';
 import TweetCard from '../components/TweetCard';
-
 export default function Profile() {
   let { id } = useParams();
   const [profile, setProfile] = useState(null);
@@ -25,11 +24,7 @@ export default function Profile() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
-
   const isOwnProfile = currentUser && (currentUser.username === id || currentUser._id === id);
-
-
-
   useEffect(() => {
     const fetchProfile = async () => {
       setIsLoading(true);
@@ -37,19 +32,13 @@ export default function Profile() {
         const response = await api.get(`/users/c/${id}`);
         setProfile(response.data.data);
         setIsSubscribed(response.data.data.isSubscribed);
-
         try {
           const vids = await api.get(`/videos?userId=${response.data.data._id}`);
           setVideos(vids.data.data?.docs || vids.data.data?.videos || []);
         } catch (e) { setVideos([]); }
-
         try {
-
           const tws = await api.get(`/tweets/user/${response.data.data._id}`);
           const tweetData = tws.data.data;
-
-
-
           const profileOwner = {
             _id: response.data.data._id,
             username: tweetData.username || response.data.data.username,
@@ -62,12 +51,10 @@ export default function Profile() {
           }));
           setTweets(tweetsArray);
         } catch (e) { setTweets([]); }
-
         try {
           const pLists = await api.get(`/playlist/user/${response.data.data._id}`);
           setPlaylists(pLists.data.data || []);
         } catch (e) { setPlaylists([]); }
-
       } catch (error) {
         toast.error('Failed to load profile details');
       } finally {
@@ -76,8 +63,6 @@ export default function Profile() {
     };
     if (id) fetchProfile();
   }, [id]);
-
-
   useEffect(() => {
     if (activeTab === 'Liked' && isOwnProfile && likedVideos.length === 0) {
       api.get('/likes/videos').then(res => {
@@ -98,14 +83,11 @@ export default function Profile() {
       }).catch(() => setLikedVideos([]));
     }
   }, [activeTab]);
-
-
   useEffect(() => {
     if (!socket || !profile) return;
     const handleSubUpdate = ({ channelId, subscribersCount, isSubscribed: newSub, byUserId }) => {
       if (channelId === profile._id || channelId === profile._id?.toString()) {
         setProfile(prev => ({ ...prev, subscribersCount }));
-
         if (currentUser && byUserId === currentUser._id) {
           setIsSubscribed(newSub);
         }
@@ -114,7 +96,6 @@ export default function Profile() {
     socket.on('subscriptionUpdate', handleSubUpdate);
     return () => socket.off('subscriptionUpdate', handleSubUpdate);
   }, [socket, profile, currentUser]);
-
   const handleSubscribe = async () => {
     if (!currentUser) return toast.error('Please log in to subscribe');
     if (isSubscribing) return;
@@ -131,13 +112,11 @@ export default function Profile() {
       setIsSubscribing(false);
     }
   };
-
   const handleProfileUpdated = (updatedProfile) => {
     setProfile(prev => ({ ...prev, ...updatedProfile }));
   };
   const handleTweetDelete = (tweetId) => setTweets(prev => prev.filter(t => t._id !== tweetId));
   const handleTweetUpdate = (tweetId, newContent) => setTweets(prev => prev.map(t => t._id === tweetId ? { ...t, content: newContent } : t));
-
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center min-h-[60vh]">
@@ -145,11 +124,9 @@ export default function Profile() {
       </div>
     );
   }
-
   if (!profile) {
     return <div className="w-full mt-10"><EmptyState type="error" /></div>;
   }
-
   const stats = [
     { label: 'Subscribers', value: profile.subscribersCount || 0 },
     { label: 'Videos', value: videos.length },
@@ -157,11 +134,9 @@ export default function Profile() {
     { label: 'Jokes', value: tweets.filter(t => t.type === 'joke' || t.type === 'JOKE').length },
     { label: 'Playlists', value: playlists.length },
   ];
-
   const tabs = isOwnProfile
     ? ['Videos', 'Tweets', 'Jokes', 'Playlists', 'Liked']
     : ['Videos', 'Tweets', 'Jokes', 'Playlists'];
-
   return (
     <div className="animate-fade-in relative pb-10">
       <div
@@ -183,7 +158,6 @@ export default function Profile() {
           <h1 className="text-fluid-4xl lg:text-5xl font-display font-black text-text-main tracking-tighter max-w-full bg-gradient-to-r from-text-main to-text-main/40 bg-clip-text text-transparent">
             {profile.fullName || profile.username}
           </h1>
-
           <div className="flex items-center gap-2 flex-wrap justify-center lg:justify-start">
             <span className="text-xs sm:text-sm font-bold text-primary tracking-widest uppercase whitespace-nowrap">@{profile.username}</span>
             {isOwnProfile && profile.email && (
@@ -237,7 +211,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-
       <div className="mt-8 mx-3 sm:mx-4 lg:mx-6 overflow-x-auto scrollbar-hide">
         <div className="inline-flex items-center p-1.5 bg-text-main/[0.02] backdrop-blur-3xl border border-text-main/5 rounded-full min-w-max">
           {tabs.map(tab => (
@@ -259,7 +232,6 @@ export default function Profile() {
           ))}
         </div>
       </div>
-
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
@@ -286,7 +258,6 @@ export default function Profile() {
               )}
             </div>
           )}
-
           {activeTab === 'Tweets' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {tweets.filter(t => t.type === 'tweet' || !t.type).length > 0 ? tweets.filter(t => t.type === 'tweet' || !t.type).map((t, i) => {
@@ -319,7 +290,6 @@ export default function Profile() {
               )}
             </div>
           )}
-
           {activeTab === 'Jokes' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {tweets.filter(t => t.type === 'joke').length > 0 ? tweets.filter(t => t.type === 'joke').map((t, i) => {
@@ -352,7 +322,6 @@ export default function Profile() {
               )}
             </div>
           )}
-
           {activeTab === 'Playlists' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {playlists.length > 0 ? playlists.map((pl, i) => (
@@ -394,7 +363,6 @@ export default function Profile() {
               )}
             </div>
           )}
-
           {activeTab === 'Liked' && isOwnProfile && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {likedVideos.length > 0 ? likedVideos.map((v, i) => (
@@ -410,7 +378,6 @@ export default function Profile() {
           )}
         </motion.div>
       </AnimatePresence>
-
       {isOwnProfile && (
         <EditProfileModal
           isOpen={isEditModalOpen}
@@ -421,4 +388,4 @@ export default function Profile() {
       )}
     </div>
   );
-}
+}

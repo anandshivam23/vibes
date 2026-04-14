@@ -7,30 +7,24 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { toast } from 'react-hot-toast';
 import EmptyState from '../components/EmptyState';
-
 export default function Notifications() {
   const { currentUser } = useAuth();
   const { socket } = useSocket();
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     if (currentUser) {
       fetchNotifications();
     }
   }, [currentUser]);
-
   useEffect(() => {
     if (!socket || !currentUser) return;
-
     const handleNewNotif = (newNotif) => {
       setNotifications(prev => [newNotif, ...prev]);
     };
-
     socket.on(`notification:${currentUser._id}`, handleNewNotif);
     return () => socket.off(`notification:${currentUser._id}`, handleNewNotif);
   }, [socket, currentUser]);
-
   const fetchNotifications = async () => {
     setIsLoading(true);
     try {
@@ -43,7 +37,6 @@ export default function Notifications() {
       setIsLoading(false);
     }
   };
-
   const markAsRead = async (id) => {
     try {
       await api.patch(`/notifications/${id}/read`);
@@ -54,7 +47,6 @@ export default function Notifications() {
       toast.error('Sync failed. Try again.');
     }
   };
-
   const clearAll = async () => {
     if (!window.confirm('Wipe your entire activity pulse?')) return;
     try {
@@ -65,7 +57,6 @@ export default function Notifications() {
       toast.error('Could not clear. Backend pulse lost.');
     }
   };
-
   const getIcon = (type) => {
     switch (type) {
       case 'LIKE': return <Heart className="text-red-400 fill-red-400" size={16} />;
@@ -77,7 +68,6 @@ export default function Notifications() {
       default: return <Bell size={16} />;
     }
   };
-
   const getActionText = (type) => {
     switch (type) {
       case 'LIKE': return 'liked your vibe';
@@ -89,20 +79,17 @@ export default function Notifications() {
       default: return 'interacted with you';
     }
   };
-
   const getRedirectLink = (notif) => {
     if (notif.video) return `/video/${notif.video}`;
     if (notif.tweet) return `/tweets`;
     if (notif.senderDetails?.username) return `/profile/${notif.senderDetails.username}`;
     return '/';
   };
-
   if (!currentUser) return (
     <div className="py-24 flex justify-center w-full">
       <EmptyState type="login" />
     </div>
   );
-
   return (
     <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-8 md:py-12 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
@@ -112,7 +99,6 @@ export default function Notifications() {
            </h1>
            <p className="text-xs sm:text-sm font-bold text-text-muted/40 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Your community interactions</p>
         </div>
-
         {notifications.length > 0 && (
           <button 
             onClick={clearAll}
@@ -122,7 +108,6 @@ export default function Notifications() {
           </button>
         )}
       </div>
-
       <div className="grid gap-4">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
@@ -199,4 +184,4 @@ export default function Notifications() {
       </div>
     </div>
   );
-}
+}

@@ -5,56 +5,42 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-
 const TAB_PROFILE = 'profile';
 const TAB_SECURITY = 'security';
 const TAB_DANGER = 'danger';
-
 export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
-
   const [activeTab, setActiveTab] = useState(TAB_PROFILE);
-
-
   const [fullName, setFullName] = useState(profile?.fullName || '');
   const [avatarFile, setAvatarFile] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(profile?.avatar || null);
   const [coverPreview, setCoverPreview] = useState(profile?.coverImage || null);
   const [isSaving, setIsSaving] = useState(false);
-
-
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [isChangingPw, setIsChangingPw] = useState(false);
-
-
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const DELETE_PHRASE = 'DELETE MY ACCOUNT';
-
   if (!isOpen) return null;
-
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) { setAvatarFile(file); setAvatarPreview(URL.createObjectURL(file)); }
   };
-
   const handleCoverChange = (e) => {
     const file = e.target.files[0];
     if (file) { setCoverFile(file); setCoverPreview(URL.createObjectURL(file)); }
   };
-
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     try {
       let updatedProfile = { ...profile };
-
       if (fullName !== profile.fullName) {
         const res = await api.patch('/users/update-account', { fullName, email: profile.email });
         updatedProfile = { ...updatedProfile, ...res.data.data };
@@ -71,7 +57,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
         const res = await api.patch('/users/cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         updatedProfile = { ...updatedProfile, coverImage: res.data.data.coverImage };
       }
-
       toast.success('Profile updated!');
       onUpdated?.(updatedProfile);
       onClose();
@@ -81,12 +66,20 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
       setIsSaving(false);
     }
   };
-
   const handleChangePassword = async (e) => {
     e.preventDefault();
     if (!oldPassword || !newPassword || !confirmPassword) return toast.error('Fill all fields');
     if (newPassword !== confirmPassword) return toast.error('New passwords do not match');
-    if (newPassword.length < 6) return toast.error('Password must be at least 6 characters');
+    const pwErrors = [];
+    if (newPassword.length < 8)             pwErrors.push('at least 8 characters');
+    if (!/[A-Z]/.test(newPassword))        pwErrors.push('an uppercase letter');
+    if (!/[a-z]/.test(newPassword))        pwErrors.push('a lowercase letter');
+    if (!/[0-9]/.test(newPassword))        pwErrors.push('a number');
+    if (!/[^A-Za-z0-9]/.test(newPassword)) pwErrors.push('a special character');
+    if (pwErrors.length > 0) {
+      return toast.error(`Password needs: ${pwErrors.join(', ')}`);
+    }
+    if (oldPassword === newPassword) return toast.error('New password must differ from current password');
     setIsChangingPw(true);
     try {
       await api.post('/users/change-password', { oldPassword, newPassword });
@@ -98,7 +91,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
       setIsChangingPw(false);
     }
   };
-
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== DELETE_PHRASE) return toast.error(`Type "${DELETE_PHRASE}" to confirm`);
     setIsDeleting(true);
@@ -113,13 +105,11 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
       setIsDeleting(false);
     }
   };
-
   const tabs = [
     { key: TAB_PROFILE, label: 'Profile', icon: User },
     { key: TAB_SECURITY, label: 'Security', icon: Shield },
     { key: TAB_DANGER, label: 'Danger Zone', icon: AlertTriangle },
   ];
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <motion.div
@@ -127,15 +117,12 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="bg-surface border border-surface-hover rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
-        {}
         <div className="flex justify-between items-center px-6 py-4 border-b border-surface-hover flex-shrink-0">
           <h2 className="text-xl font-bold text-text-main">Edit Profile</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-hover transition-colors text-text-muted">
             <X size={18} />
           </button>
         </div>
-
-        {}
         <div className="flex border-b border-surface-hover flex-shrink-0">
           {tabs.map(({ key, label, icon: Icon }) => (
             <button
@@ -154,11 +141,8 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
             </button>
           ))}
         </div>
-
-        {}
         <div className="overflow-y-auto flex-1">
           <AnimatePresence mode="wait">
-            {}
             {activeTab === TAB_PROFILE && (
               <motion.form
                 key="profile"
@@ -168,7 +152,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                 onSubmit={handleSaveProfile}
                 className="p-6 space-y-5"
               >
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-2">Cover Image</label>
                   <div className="relative h-36 rounded-xl overflow-hidden bg-surface-hover group cursor-pointer border border-surface-hover">
@@ -186,8 +169,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     <input id="cover-upload" type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                   </div>
                 </div>
-
-                {}
                 <div className="flex items-center gap-5">
                   <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-primary/30 flex-shrink-0 group cursor-pointer shadow-lg">
                     {avatarPreview
@@ -205,8 +186,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     <p className="text-xs text-primary mt-1 font-semibold">JPG, PNG, GIF up to 5MB</p>
                   </div>
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">Full Name</label>
                   <div className="relative">
@@ -220,8 +199,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     />
                   </div>
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">Username</label>
                   <div className="relative">
@@ -235,8 +212,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                   </div>
                   <p className="text-xs text-text-muted mt-1 pl-1">Username cannot be changed</p>
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">Email Address</label>
                   <div className="relative">
@@ -250,7 +225,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                   </div>
                   <p className="text-xs text-text-muted mt-1 pl-1">Email cannot be changed here</p>
                 </div>
-
                 <div className="flex justify-end gap-3 pt-2">
                   <button type="button" onClick={onClose} className="px-5 py-2 rounded-xl hover:bg-surface-hover transition-colors text-sm font-semibold text-text-muted">
                     Cancel
@@ -261,8 +235,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                 </div>
               </motion.form>
             )}
-
-            {}
             {activeTab === TAB_SECURITY && (
               <motion.form
                 key="security"
@@ -276,8 +248,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                   <Shield size={20} className="text-primary flex-shrink-0" />
                   <p className="text-sm text-text-muted">Change your account password. Choose something strong and unique.</p>
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">Current Password</label>
                   <div className="relative">
@@ -294,8 +264,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     </button>
                   </div>
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">New Password</label>
                   <div className="relative">
@@ -304,7 +272,7 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                       type={showNew ? 'text' : 'password'}
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
-                      placeholder="At least 6 characters"
+                      placeholder="Min 8 chars, uppercase, number, symbol"
                       className="w-full bg-background border border-surface-hover rounded-xl pl-9 pr-10 py-2.5 text-text-main focus:outline-none focus:border-primary/60 transition-colors text-sm"
                     />
                     <button type="button" onClick={() => setShowNew(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
@@ -312,19 +280,35 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     </button>
                   </div>
                   {newPassword && (
-                    <div className="mt-1.5 flex gap-1">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${
-                          newPassword.length >= i * 3
-                            ? newPassword.length >= 12 ? 'bg-green-500' : newPassword.length >= 8 ? 'bg-yellow-500' : 'bg-red-500'
-                            : 'bg-surface-hover'
-                        }`} />
-                      ))}
+                    <div className="mt-1.5 space-y-1.5">
+                      <div className="flex gap-1">
+                        {[1,2,3,4,5].map(i => {
+                          let score = 0;
+                          if (newPassword.length >= 8)            score++;
+                          if (/[A-Z]/.test(newPassword))          score++;
+                          if (/[a-z]/.test(newPassword))          score++;
+                          if (/[0-9]/.test(newPassword))          score++;
+                          if (/[^A-Za-z0-9]/.test(newPassword))  score++;
+                          const color = score <= 2 ? 'bg-red-500' : score <= 3 ? 'bg-yellow-500' : score <= 4 ? 'bg-blue-400' : 'bg-green-500';
+                          return <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= score ? color : 'bg-surface-hover'}`} />;
+                        })}
+                      </div>
+                      <ul className="text-xs space-y-0.5 pl-0.5">
+                        {[
+                          { text: 'At least 8 characters',  ok: newPassword.length >= 8 },
+                          { text: 'Uppercase letter',        ok: /[A-Z]/.test(newPassword) },
+                          { text: 'Lowercase letter',        ok: /[a-z]/.test(newPassword) },
+                          { text: 'Number',                  ok: /[0-9]/.test(newPassword) },
+                          { text: 'Special character',       ok: /[^A-Za-z0-9]/.test(newPassword) },
+                        ].map(({ text, ok }) => (
+                          <li key={text} className={`flex items-center gap-1.5 ${ok ? 'text-green-400' : 'text-text-muted/50'}`}>
+                            <span>{ok ? '✓' : '○'}</span> {text}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </div>
-
-                {}
                 <div>
                   <label className="block text-sm font-semibold text-text-muted mb-1.5">Confirm New Password</label>
                   <div className="relative">
@@ -343,7 +327,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     <p className="text-xs text-red-400 mt-1 pl-1">Passwords don't match</p>
                   )}
                 </div>
-
                 <div className="flex justify-end gap-3 pt-2">
                   <button type="button" onClick={onClose} className="px-5 py-2 rounded-xl hover:bg-surface-hover transition-colors text-sm font-semibold text-text-muted">
                     Cancel
@@ -358,8 +341,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                 </div>
               </motion.form>
             )}
-
-            {}
             {activeTab === TAB_DANGER && (
               <motion.div
                 key="danger"
@@ -375,7 +356,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                     <p className="text-xs text-text-muted mt-1">These actions are permanent and cannot be undone. Please proceed with caution.</p>
                   </div>
                 </div>
-
                 <div className="bg-surface border border-red-500/20 rounded-xl p-5 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
@@ -386,7 +366,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                       <p className="text-xs text-text-muted">Permanently delete your account, all videos, tweets and playlists.</p>
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-xs font-semibold text-text-muted mb-2">
                       To confirm, type <span className="text-red-400 font-bold">"{DELETE_PHRASE}"</span> below:
@@ -399,7 +378,6 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
                       className="w-full bg-background border border-red-500/30 focus:border-red-500/60 rounded-xl px-4 py-2.5 text-sm text-text-main focus:outline-none transition-colors placeholder-text-muted/50 font-mono"
                     />
                   </div>
-
                   <button
                     onClick={handleDeleteAccount}
                     disabled={isDeleting || deleteConfirmText !== DELETE_PHRASE}
@@ -415,4 +393,4 @@ export default function EditProfileModal({ isOpen, onClose, profile, onUpdated }
       </motion.div>
     </div>
   );
-}
+}
