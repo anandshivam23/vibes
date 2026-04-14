@@ -43,11 +43,13 @@ export default function TopNav({ onMenuClick }) {
   return (
     <>
       <CoffeeLoader isLoading={isUploading} fullScreen={true} />
+
+      {/* ── Mobile full-screen search overlay ── */}
       {showMobileSearch && (
-        <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-xl flex items-start p-4 pt-6 lg:hidden">
-          <form onSubmit={handleSearch} className="w-full flex items-center gap-3">
+        <div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-xl flex items-start p-4 pt-5">
+          <form onSubmit={handleSearch} className="w-full flex items-center gap-2">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted/60" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted/60" />
               <input
                 ref={searchRef}
                 autoFocus
@@ -55,117 +57,139 @@ export default function TopNav({ onMenuClick }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search vibes..."
-                className="w-full bg-surface/60 border border-surface-hover/60 rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-all text-text-main placeholder-text-muted/40"
+                className="w-full bg-surface/60 border border-surface-hover/60 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-all text-text-main placeholder-text-muted/40"
               />
             </div>
-            <button type="button" onClick={() => setShowMobileSearch(false)} className="p-3 text-text-muted hover:text-primary">
-              <X size={22} />
+            <button
+              type="button"
+              onClick={() => setShowMobileSearch(false)}
+              className="p-2.5 text-text-muted hover:text-primary rounded-xl bg-surface/50"
+            >
+              <X size={20} />
             </button>
           </form>
         </div>
       )}
 
-      <header className="h-16 border-b border-surface-hover/30 bg-background/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-3 sm:px-5 lg:px-8 gap-3">
-        <div className="flex items-center gap-3 shrink-0">
+      {/* ── Main header ── */}
+      <header className="h-14 sm:h-16 border-b border-surface-hover/30 bg-background/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-2 sm:px-4 lg:px-8 gap-2 w-full">
+
+        {/* Left: Hamburger + Logo */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-0">
           <button
             onClick={onMenuClick}
             id="hamburger-btn"
             aria-label="Open menu"
-            className="lg:hidden p-2.5 text-text-muted hover:text-primary transition-colors rounded-xl hover:bg-surface/50 touch-target"
+            className="lg:hidden p-2 text-text-muted hover:text-primary transition-colors rounded-xl hover:bg-surface/50"
           >
-            <Menu size={22} />
+            <Menu size={20} />
           </button>
-          <Link to="/" className="flex items-center gap-2 lg:hidden" aria-label="Caffe Vibes Home">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-background shadow-lg shadow-primary/20">
-              <Coffee size={16} />
+          <Link to="/" className="flex items-center gap-1.5 lg:hidden" aria-label="Caffe Vibes Home">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-background shadow-lg shadow-primary/20 shrink-0">
+              <Coffee size={14} className="sm:hidden" />
+              <Coffee size={16} className="hidden sm:block" />
             </div>
-            <span className="font-display font-black text-base tracking-tight text-text-main hidden sm:block">Caffe Vibes</span>
+            <span className="font-display font-black text-sm sm:text-base tracking-tight text-text-main hidden xs:block">Caffe Vibes</span>
           </Link>
         </div>
+
+        {/* Center: Desktop search bar */}
         <form onSubmit={handleSearch} className="flex-1 max-w-2xl relative group hidden sm:block">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted/60 group-focus-within:text-primary transition-colors">
-            <Search size={17} />
+            <Search size={16} />
           </div>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search vibes..."
-            className="w-full bg-surface/40 border border-surface-hover/50 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-primary/50 focus:bg-surface/80 transition-all placeholder-text-muted/40 text-text-main"
+            className="w-full bg-surface/40 border border-surface-hover/50 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 focus:bg-surface/80 transition-all placeholder-text-muted/40 text-text-main"
           />
         </form>
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+
+        {/* Right: Action buttons — collapses smartly on mobile */}
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+
+          {/* Mobile search toggle */}
           <button
             onClick={() => setShowMobileSearch(true)}
-            className="sm:hidden w-10 h-10 rounded-2xl bg-surface/40 border border-surface-hover/60 flex items-center justify-center text-text-muted hover:text-primary transition-all touch-target"
+            className="sm:hidden w-8 h-8 flex items-center justify-center text-text-muted hover:text-primary transition-all rounded-xl"
             aria-label="Search"
           >
             <Search size={18} />
           </button>
+
+          {/* Create post — hidden on mobile */}
           <button
             onClick={handleCreateTweetClick}
-            className="hidden sm:flex w-10 h-10 rounded-2xl bg-surface/40 border border-surface-hover/60 items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all shadow-sm group touch-target"
+            className="hidden md:flex w-9 h-9 rounded-xl bg-surface/40 border border-surface-hover/60 items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all group"
             title="Create Post"
             aria-label="Create post"
           >
-            <Feather size={18} className="group-hover:scale-110 transition-transform" />
+            <Feather size={16} className="group-hover:scale-110 transition-transform" />
           </button>
+
+          {/* Upload video — hidden on mobile */}
           <button
             onClick={handleUploadVideoClick}
-            className="w-10 h-10 rounded-2xl bg-surface/40 border border-surface-hover/60 flex items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all shadow-sm group touch-target"
+            className="hidden sm:flex w-9 h-9 rounded-xl bg-surface/40 border border-surface-hover/60 items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all group"
             title="Upload Video"
             aria-label="Upload video"
           >
-            <Video size={18} className="group-hover:scale-110 transition-transform" />
+            <Video size={16} className="group-hover:scale-110 transition-transform" />
           </button>
+
+          {/* Notifications bell */}
           <Link
             to="/notifications"
-            className="w-10 h-10 rounded-2xl bg-surface/40 border border-surface-hover/60 flex items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all relative shadow-sm group touch-target"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-surface/40 border border-surface-hover/60 flex items-center justify-center text-text-muted hover:bg-surface hover:text-primary transition-all relative group"
             title="Notifications"
             aria-label="Notifications"
           >
-            <Bell size={18} className="group-hover:rotate-12 transition-transform" />
+            <Bell size={16} className="group-hover:rotate-12 transition-transform" />
             {currentUser && (
-              <>
-                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background animate-ping" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-              </>
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full border border-background" />
             )}
           </Link>
+
+          {/* ── Logged-in state ── */}
           {currentUser ? (
-            <div className="flex items-center gap-2 sm:gap-3 pl-2 border-l border-text-main/5">
+            <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-text-main/10">
+              {/* Avatar */}
               <Link
                 to={`/profile/${currentUser.username}`}
-                className="w-10 h-10 rounded-2xl bg-surface/40 p-0.5 overflow-hidden border border-surface-hover/60 hover:border-primary shadow-lg hover:scale-105 active:scale-95 transition-all touch-target"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-surface-hover/60 hover:border-primary shadow-lg hover:scale-105 active:scale-95 transition-all shrink-0"
                 aria-label="My profile"
               >
                 <img
                   src={currentUser.avatar || 'https://i.pravatar.cc/150?img=32'}
                   alt="Avatar"
-                  className="w-full h-full object-cover rounded-[14px]"
+                  className="w-full h-full object-cover"
                 />
               </Link>
 
+              {/* Logout — icon only on mobile, text on desktop */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 h-10 px-3 sm:px-4 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-background rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-red-500/20 active:scale-95 touch-target whitespace-nowrap"
+                className="flex items-center justify-center gap-1.5 h-8 sm:h-9 px-2 sm:px-3 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-200 border border-red-500/20 active:scale-95 shrink-0"
                 aria-label="Log out"
               >
-                <LogOut size={15} />
+                <LogOut size={14} />
                 <span className="hidden lg:inline">Vibe Out</span>
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 ml-1">
+            /* ── Logged-out state ── */
+            <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-text-main/10">
               <Link
                 to="/login"
-                className="flex items-center justify-center h-[38px] px-3 sm:px-4 text-[13px] font-bold text-text-muted hover:text-primary transition-all whitespace-nowrap touch-target rounded-xl hover:bg-surface/50"
+                className="hidden sm:flex items-center justify-center h-8 sm:h-9 px-3 sm:px-4 text-[12px] sm:text-[13px] font-bold text-text-muted hover:text-primary transition-all rounded-xl hover:bg-surface/50 whitespace-nowrap"
               >
                 Log In
               </Link>
               <Link
                 to="/register"
-                className="flex items-center justify-center h-[38px] px-5 sm:px-6 text-[13px] font-bold bg-primary hover:bg-primary-hover text-background rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 whitespace-nowrap touch-target"
+                className="flex items-center justify-center h-8 sm:h-9 px-3 sm:px-5 text-[11px] sm:text-[13px] font-black bg-primary hover:bg-primary-hover text-background rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 whitespace-nowrap"
               >
                 Sign Up
               </Link>

@@ -74,7 +74,7 @@ const CommentItem = ({ comment, depth = 0, onReply, onDelete, onUpdate, allComme
   const commentor = comment.commentor || comment.owner;
 
   return (
-    <div className={`flex flex-col ${depth > 0 ? 'ml-8 mt-2' : 'mt-6'}`}>
+    <div className={`flex flex-col ${depth > 0 ? 'ml-5 sm:ml-8 mt-2' : 'mt-6'}`}>
       <div className="flex gap-4 group/comment">
         <Link to={`/profile/${commentor?.username || commentor?._id}`} className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-surface-hover hover:border-primary transition-all">
           <img src={commentor?.avatar || "https://i.pravatar.cc/150?img=32"} alt={commentor?.username} className="w-full h-full object-cover" />

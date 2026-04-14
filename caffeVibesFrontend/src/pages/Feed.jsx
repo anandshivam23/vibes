@@ -229,16 +229,16 @@ export default function Feed() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary-hover/5 blur-[180px] rounded-full animate-pulse-slow animation-delay-2000" />
       </div>
 
-      <div className="w-full max-w-[1440px] mx-auto px-4 md:px-8 py-4 md:py-6 animate-fade-in">
-        <div className="flex flex-col xl:flex-row gap-8 items-start">
+      <div className="w-full max-w-screen-xl mx-auto pb-6 animate-fade-in">
+        <div className="flex flex-col xl:flex-row gap-6 items-start">
           
           <div className="flex-1 min-w-0 w-full">
             {isRoot && (
-               <div className="flex flex-col gap-1.5 mb-8 md:mb-10">
-                 <h1 className="text-3xl md:text-4xl font-display font-black text-text-main tracking-tighter bg-gradient-to-r from-text-main to-text-main/30 bg-clip-text text-transparent">
+             <div className="flex flex-col gap-1 mb-5 sm:mb-8">
+                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-text-main tracking-tighter bg-gradient-to-r from-text-main to-text-main/30 bg-clip-text text-transparent">
                    Latest Feed
                  </h1>
-                 <p className="text-text-muted/40 font-bold uppercase tracking-[0.3em] text-[8px] md:text-[9px] ml-1">The pulse of the universe</p>
+                 <p className="text-text-muted/40 font-bold uppercase tracking-[0.2em] text-[8px] md:text-[9px] ml-1">The pulse of the universe</p>
                </div>
             )}
 
@@ -249,12 +249,12 @@ export default function Feed() {
             )}
 
             {isRoot && (
-              <div className="flex items-center gap-2.5 mb-8 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex items-center gap-2 mb-5 sm:mb-6 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => { setActiveTab(cat); setNewPostContent(''); }}
-                    className={`whitespace-nowrap px-5 md:px-7 py-2 md:py-2.5 rounded-full text-[10px] md:text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-300 border-2 ${
+                    className={`whitespace-nowrap px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-300 border-2 flex-shrink-0 ${
                       activeTab === cat
                         ? 'bg-primary text-background border-primary shadow-md'
                         : 'bg-text-main/[0.02] hover:bg-text-main/[0.05] text-text-muted border-text-main/5'
@@ -267,7 +267,7 @@ export default function Feed() {
             )}
 
             {isRoot && currentUser && (
-              <div className="mb-10 w-full max-w-2xl">
+              <div className="mb-6 sm:mb-8 w-full">
                 {activeTab === 'Videos' ? (
                   <div 
                     onClick={() => setIsVideoModalOpen(true)}
@@ -332,10 +332,10 @@ export default function Feed() {
             ) : isError ? (
               <EmptyState type="error" />
             ) : items.length > 0 ? (
-              <div className={`grid gap-3 sm:gap-4 md:gap-5 w-full ${
+              <div className={`w-full ${
                 (isLikedPage || isDislikedPage || activeTab === 'Videos')
-                  ? 'grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
-                  : 'max-w-2xl flex flex-col'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4'
+                  : 'flex flex-col gap-3 sm:gap-4 max-w-2xl'
               }`}>
                 {items.map((item, index) => {
                   if (item.type === 'video') {
@@ -363,7 +363,8 @@ export default function Feed() {
               </div>
             )}
           </div>
-          <div className="hidden xl:block w-80 xl:w-96 shrink-0 sticky top-4 self-start h-[calc(100vh-6rem)] overflow-hidden">
+          {/* Right sidebar — desktop only */}
+          <div className="hidden xl:block w-80 xl:w-96 shrink-0 sticky top-4 self-start">
             <RightSidebar />
           </div>
         </div>

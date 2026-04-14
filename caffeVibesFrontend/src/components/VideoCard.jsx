@@ -9,11 +9,11 @@ export default function VideoCard({ video, index, compact }) {
       initial={{ opacity: 0, scale: 0.95, y: 30 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.7, delay: index * 0.1, ease: [0.23, 1, 0.32, 1] }}
-      className={`group flex flex-col cursor-pointer ${compact ? 'gap-3 mb-2' : 'gap-6 mb-6'}`}
+      className={`group flex flex-col cursor-pointer ${compact ? 'gap-2 sm:gap-3 mb-2' : 'gap-3 sm:gap-5 mb-4 sm:mb-6'}`}
     >
       <Link 
         to={`/video/${video.id}`} 
-        className={`relative aspect-video overflow-hidden bg-surface border border-text-main/5 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 ${compact ? 'rounded-[1.5rem]' : 'rounded-[2.5rem]'}`}
+        className={`relative aspect-video overflow-hidden bg-surface border border-text-main/5 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/30 ${compact ? 'rounded-xl sm:rounded-2xl' : 'rounded-2xl sm:rounded-[2rem]'}`}
       >
         <img
           src={video.thumbnail}
@@ -39,13 +39,13 @@ export default function VideoCard({ video, index, compact }) {
       <div className={`flex items-start gap-4 ${compact ? 'px-1' : 'px-2'}`}>
         {!compact && (
           <Link to={`/profile/${video.owner.username || video.owner.id}`} className="flex-shrink-0">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl overflow-hidden bg-surface-hover border-2 border-transparent group-hover:border-primary/40 transition-all duration-500 shadow-xl group-hover:rotate-6">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-surface-hover border-2 border-transparent group-hover:border-primary/40 transition-all duration-500 shadow-xl group-hover:rotate-6">
               <img src={video.owner.avatar} alt={video.owner.name} className="w-full h-full object-cover" />
             </div>
           </Link>
         )}
         <div className="flex flex-col overflow-hidden py-1">
-          <Link to={`/video/${video.id}`} className={`font-display font-black text-text-main line-clamp-2 leading-[1.1] group-hover:text-primary transition-colors tracking-tight ${compact ? 'text-sm md:text-base' : 'text-lg md:text-xl'}`}>
+          <Link to={`/video/${video.id}`} className={`font-display font-black text-text-main line-clamp-2 leading-tight group-hover:text-primary transition-colors tracking-tight ${compact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base md:text-lg'}`}>
             {video.title}
           </Link>
           <div className={`flex flex-wrap items-center gap-2 mt-2 ${compact ? 'hidden sm:flex' : 'flex'}`}>

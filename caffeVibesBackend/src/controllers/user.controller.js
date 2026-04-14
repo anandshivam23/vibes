@@ -65,8 +65,8 @@ const registerUser = asyncHandler( async (req, res) => {
 
     const user = await User.create({
         fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
+        avatar: avatar.secure_url || avatar.url,
+        coverImage: coverImage?.secure_url || coverImage?.url || "",
         email, 
         password,
         username: username.toLowerCase()
@@ -115,7 +115,8 @@ const loginUser = asyncHandler(async (req, res) =>{
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "none"
     }
 
     return res
@@ -149,7 +150,8 @@ const logoutUser = asyncHandler(async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "none"
     }
 
     return res
@@ -185,7 +187,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     
         const options = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            sameSite: "none"
         }
     
         const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
@@ -280,7 +283,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         req.user?._id,
         {
             $set:{
-                avatar: avatar.url
+                avatar: avatar.secure_url || avatar.url
             }
         },
         {new: true}
@@ -311,7 +314,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         req.user?._id,
         {
             $set:{
-                coverImage: coverImage.url
+                coverImage: coverImage.secure_url || coverImage.url
             }
         },
         {new: true}
@@ -457,7 +460,8 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "none"
     };
 
     return res

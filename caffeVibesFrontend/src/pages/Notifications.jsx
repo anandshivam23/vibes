@@ -105,11 +105,11 @@ export default function Notifications() {
   return (
     <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-8 md:py-12 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-        <div className="flex flex-col gap-2">
-           <h1 className="text-4xl md:text-5xl font-display font-black text-text-main tracking-tighter bg-gradient-to-r from-text-main to-text-main/30 bg-clip-text text-transparent">
+        <div className="flex flex-col gap-1">
+           <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-text-main tracking-tighter bg-gradient-to-r from-text-main to-text-main/30 bg-clip-text text-transparent">
              Activity Pulse
            </h1>
-           <p className="text-sm font-bold text-text-muted/40 uppercase tracking-[0.3em]">Your community interactions in real-time</p>
+           <p className="text-xs sm:text-sm font-bold text-text-muted/40 uppercase tracking-[0.2em] sm:tracking-[0.3em]">Your community interactions</p>
         </div>
 
         {notifications.length > 0 && (

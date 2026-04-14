@@ -9,8 +9,11 @@ export default function Layout() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-[100dvh] w-full bg-background overflow-hidden relative">
+    <div className="flex h-[100dvh] w-full max-w-[100vw] bg-background overflow-hidden relative">
+      {/* Sidebar */}
       <Sidebar isOpen={isMobileSidebarOpen} onClose={() => setIsMobileSidebarOpen(false)} />
+
+      {/* Sidebar backdrop overlay on mobile */}
       <AnimatePresence>
         {isMobileSidebarOpen && (
           <motion.div
@@ -18,17 +21,20 @@ export default function Layout() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[45] lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] lg:hidden"
           />
         )}
       </AnimatePresence>
-      <div className="flex-1 flex flex-col min-w-0 h-[100dvh]">
+
+      {/* Main content column */}
+      <div className="flex-1 flex flex-col min-w-0 w-full h-[100dvh] overflow-hidden">
         <TopNav onMenuClick={() => setIsMobileSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto scrollbar-hide px-3 sm:px-5 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide px-2 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
           <Outlet />
         </main>
       </div>
 
+      {/* Floating chatbot */}
       <ChatbotWidget />
     </div>
   )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api/axios';
-import { Play, Loader2, Bell, Zap, ChevronRight, ChevronLeft, Heart, MessageSquare, UserPlus, Video, ExternalLink } from 'lucide-react';
+import { Play, Loader2, Bell, Compass, ChevronUp, ChevronDown, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,11 +64,11 @@ export default function RightSidebar() {
     if (videos.length <= 4) return;
     const interval = setInterval(() => {
       if (videoScrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = videoScrollRef.current;
-        if (scrollLeft + clientWidth >= scrollWidth - 5) {
-          videoScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        const { scrollTop, scrollHeight, clientHeight } = videoScrollRef.current;
+        if (scrollTop + clientHeight >= scrollHeight - 5) {
+          videoScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          videoScrollRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+          videoScrollRef.current.scrollBy({ top: 120, behavior: 'smooth' });
         }
       }
     }, 3500);
@@ -110,30 +110,34 @@ export default function RightSidebar() {
 
 
   return (
-    <div className="w-80 xl:w-96 hidden lg:flex flex-col gap-4 h-[calc(100vh-4rem)] overflow-hidden animate-fade-in">
+    <div className="flex flex-col gap-4 items-start animate-fade-in">
       
-      {}
-      <div className="bg-text-main/[0.01] backdrop-blur-3xl rounded-[3rem] p-7 border border-text-main/10 shadow-3xl flex flex-col h-[45%] min-h-[300px] relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -z-10 rounded-full" />
+      {/* ── Activity Pulse ── */}
+      <div className="w-full bg-text-main/[0.01] backdrop-blur-3xl rounded-2xl sm:rounded-[2rem] p-4 sm:p-5 border border-text-main/10 shadow-lg flex flex-col min-h-[240px] max-h-[320px] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-3xl -z-10 rounded-full" />
         
-        <div className="flex items-center justify-between mb-6 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-inner">
-              <Bell size={20} />
+        {/* Fixed header */}
+        <div className="flex items-center justify-between mb-4 flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+              <Bell size={16} />
             </div>
-            <h3 className="font-display font-black text-xs text-text-main uppercase tracking-[0.2em]">Activity Pulse</h3>
+            <h3 className="font-display font-black text-[11px] text-text-main uppercase tracking-[0.15em]">Activity Pulse</h3>
           </div>
-          <Link to="/notifications" className="p-2 rounded-xl bg-text-main/[0.02] hover:bg-text-main/[0.05] text-text-muted hover:text-primary transition-all">
-             <ExternalLink size={14} />
+          <Link to="/notifications" className="p-1.5 rounded-lg bg-text-main/[0.02] hover:bg-text-main/[0.05] text-text-muted hover:text-primary transition-all" title="View all">
+             <ExternalLink size={13} />
           </Link>
         </div>
 
+        {/* Scrollable notification list */}
         <div 
           ref={notificationScrollRef}
-          className="flex-1 flex flex-col gap-5 overflow-y-auto scrollbar-hide pr-1"
+          className="flex-1 flex flex-col gap-3 overflow-y-auto scrollbar-hide pr-1"
         >
           {isLoading && notifications.length === 0 ? (
-            <div className="flex py-10 justify-center"><Loader2 className="animate-spin text-primary/20" size={24} /></div>
+            <div className="flex items-center justify-center flex-1 py-6">
+              <Loader2 className="animate-spin text-primary/20" size={20} />
+            </div>
           ) : notifications.length > 0 ? (
             <AnimatePresence initial={false}>
               {notifications.map((notif, idx) => (
@@ -141,97 +145,105 @@ export default function RightSidebar() {
                   key={notif._id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="group/item flex gap-4 items-start relative pb-2 border-b border-text-main/[0.03] last:border-0"
+                  transition={{ delay: idx * 0.08 }}
+                  className="group/item flex gap-3 items-start pb-2.5 border-b border-text-main/[0.03] last:border-0"
                 >
-                  <img src={notif.senderDetails?.avatar} alt="user" className="w-8 h-8 rounded-xl object-cover border border-text-main/10 shadow-lg mt-1" />
+                  <img src={notif.senderDetails?.avatar} alt="user" className="w-7 h-7 rounded-lg object-cover border border-text-main/10 shadow mt-0.5 shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] leading-relaxed text-text-muted/60 font-medium">
                       <Link to={`/profile/${notif.senderDetails?.username}`} className="font-black text-text-main hover:text-primary transition-all">
                         @{notif.senderDetails?.username}
                       </Link> <span className="text-[10px] lowercase">{getActionText(notif.type)}</span>
                     </p>
-                    {notif.content && <p className="text-[10px] text-text-main/30 mt-1 line-clamp-1 italic font-bold">"{notif.content}"</p>}
-                    <p className="text-[9px] text-text-muted/20 font-black uppercase tracking-tighter mt-1">{timeAgo(notif.createdAt)}</p>
+                    {notif.content && <p className="text-[10px] text-text-main/30 mt-0.5 line-clamp-1 italic font-bold">"{notif.content}"</p>}
+                    <p className="text-[9px] text-text-muted/20 font-black uppercase tracking-tighter mt-0.5">{timeAgo(notif.createdAt)}</p>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           ) : (
-            <p className="text-[11px] text-text-muted/20 italic py-6 text-center font-bold uppercase tracking-widest leading-relaxed">
-              {currentUser ? 'Awaiting new vibes...' : 'Login to sync with your community pulse'}
-            </p>
+            <div className="flex items-center justify-center flex-1">
+              <p className="text-[11px] text-text-muted/20 italic text-center font-bold uppercase tracking-widest leading-relaxed">
+                {currentUser ? 'Awaiting new vibes...' : 'Login to sync your pulse'}
+              </p>
+            </div>
           )}
         </div>
         
         {notifications.length > 0 && (
-          <Link to="/notifications" className="mt-4 text-[9px] font-black uppercase tracking-[0.3em] text-center text-text-muted/40 hover:text-primary transition-colors border-t border-text-main/5 pt-4">
+          <Link to="/notifications" className="mt-3 text-[9px] font-black uppercase tracking-[0.2em] text-center text-text-muted/40 hover:text-primary transition-colors border-t border-text-main/5 pt-3 flex-shrink-0">
              Explore Full History
           </Link>
         )}
       </div>
 
-      {}
-      <div className="bg-text-main/[0.01] backdrop-blur-3xl rounded-[3rem] p-7 border border-text-main/10 shadow-3xl flex flex-col h-[50%] group relative overflow-hidden">
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 blur-3xl -z-10 rounded-full" />
+      {/* ── Next Discovery ── */}
+      <div className="w-full bg-text-main/[0.01] backdrop-blur-3xl rounded-2xl sm:rounded-[2rem] p-4 sm:p-5 border border-text-main/10 shadow-lg flex flex-col min-h-[280px] max-h-[420px] relative overflow-hidden">
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/5 blur-3xl -z-10 rounded-full" />
         
-        <div className="flex items-center justify-between mb-6 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-primary/10 text-primary shadow-inner">
-              <Zap size={20} />
+        {/* Fixed header */}
+        <div className="flex items-center justify-between mb-4 flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+              <Compass size={16} />
             </div>
-            <h3 className="font-display font-black text-xs text-text-main uppercase tracking-[0.2em]">Next Discovery</h3>
+            <h3 className="font-display font-black text-[11px] text-text-main uppercase tracking-[0.15em]">Next Discovery</h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button 
               onClick={() => videoScrollRef.current?.scrollBy({ top: -120, behavior: 'smooth' })}
               className="p-1.5 rounded-lg bg-text-main/[0.02] hover:bg-text-main/[0.05] text-text-muted transition-all"
               title="Scroll up"
             >
-              <ChevronLeft size={14} className="rotate-90" />
+              <ChevronUp size={14} />
             </button>
             <button 
               onClick={() => videoScrollRef.current?.scrollBy({ top: 120, behavior: 'smooth' })}
               className="p-1.5 rounded-lg bg-text-main/[0.02] hover:bg-text-main/[0.05] text-text-muted transition-all"
               title="Scroll down"
             >
-              <ChevronRight size={14} className="rotate-90" />
+              <ChevronDown size={14} />
             </button>
           </div>
         </div>
 
+        {/* Scrollable video list */}
         <div 
           ref={videoScrollRef}
-          className="flex flex-col gap-4 overflow-y-auto scrollbar-hide pr-1"
+          className="flex-1 flex flex-col gap-3 overflow-y-auto scrollbar-hide pr-1"
         >
           {isLoading && videos.length === 0 ? (
-            <div className="flex py-12 justify-center"><Loader2 className="animate-spin text-primary/20" size={24} /></div>
-          ) : (
+            <div className="flex items-center justify-center flex-1 py-8">
+              <Loader2 className="animate-spin text-primary/20" size={20} />
+            </div>
+          ) : videos.length > 0 ? (
             videos.slice(0, 7).map((vid, idx) => (
               <motion.div
                 key={vid._id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.1 }}
-                className="group/vid relative overflow-hidden p-3 rounded-[2rem] bg-text-main/[0.01] hover:bg-text-main/[0.03] border border-text-main/5 hover:border-text-main/10 transition-all duration-500 shadow-sm hover:shadow-2xl"
+                transition={{ delay: idx * 0.08 }}
+                className="group/vid relative overflow-hidden p-2.5 rounded-xl sm:rounded-2xl bg-text-main/[0.01] hover:bg-text-main/[0.03] border border-text-main/5 hover:border-text-main/10 transition-all duration-300 shadow-sm hover:shadow-lg"
               >
-                <Link to={`/video/${vid._id}`} className="flex gap-4 items-center">
-                  <div className="relative w-24 h-16 md:w-28 md:h-18 flex-shrink-0 rounded-[1.5rem] overflow-hidden bg-surface-hover border border-text-main/10 group-hover/vid:border-primary/20 transition-all">
-                    <img src={vid.thumbnail} alt={vid.title} className="w-full h-full object-cover group-hover/vid:scale-110 transition-transform duration-1000" />
+                <Link to={`/video/${vid._id}`} className="flex gap-3 items-center">
+                  <div className="relative w-20 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-surface-hover border border-text-main/10 group-hover/vid:border-primary/20 transition-all">
+                    <img src={vid.thumbnail} alt={vid.title} className="w-full h-full object-cover group-hover/vid:scale-110 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover/vid:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-                      <Play size={14} fill="currentColor" className="text-background" />
+                      <Play size={12} fill="currentColor" className="text-background" />
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-[11px] font-black text-text-main group-hover/vid:text-primary transition-colors line-clamp-1 tracking-tight">{vid.title}</h4>
+                    <h4 className="text-[11px] font-black text-text-main group-hover/vid:text-primary transition-colors line-clamp-2 tracking-tight leading-snug">{vid.title}</h4>
                     <p className="text-[10px] text-text-muted/40 mt-1 font-bold truncate">@{vid.owner?.username || 'user'}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                       <p className="text-[9px] text-text-muted/20 font-black uppercase tracking-tighter">{vid.views || 0} hits</p>
-                    </div>
+                    <p className="text-[9px] text-text-muted/20 font-black uppercase tracking-tighter mt-0.5">{vid.views || 0} hits</p>
                   </div>
                 </Link>
               </motion.div>
             ))
+          ) : (
+            <div className="flex items-center justify-center flex-1">
+              <p className="text-[11px] text-text-muted/20 italic text-center font-bold uppercase tracking-widest">No videos yet</p>
+            </div>
           )}
         </div>
       </div>

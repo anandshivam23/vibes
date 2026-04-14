@@ -106,7 +106,7 @@ export default function ChatbotWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3">
       {}
       <AnimatePresence>
         {isOpen && (
@@ -115,8 +115,8 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="w-[360px] sm:w-[400px] bg-surface border border-surface-hover rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-            style={{ height: '520px' }}
+            className="w-[calc(100vw-2rem)] sm:w-[380px] bg-surface border border-surface-hover rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            style={{ height: 'min(520px, calc(100dvh - 5.5rem))', maxHeight: '90dvh' }}
           >
             {}
             <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/20 to-primary/5 border-b border-surface-hover flex-shrink-0">
@@ -231,7 +231,7 @@ export default function ChatbotWidget() {
         onClick={() => setIsOpen(prev => !prev)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-primary shadow-lg shadow-primary/30 flex items-center justify-center text-background relative"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary shadow-lg shadow-primary/30 flex items-center justify-center text-background relative"
         title="Chat with Brew AI"
       >
         <AnimatePresence mode="wait">

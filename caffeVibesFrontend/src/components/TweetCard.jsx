@@ -158,14 +158,14 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.03 }}
           className={`relative group transition-all duration-300 overflow-hidden flex flex-col h-full
-                     ${isReply ? 'ml-0 p-0 pl-3 md:pl-6' : 'bg-surface border border-text-main/5 p-4 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-primary/20'}`}
+                     ${isReply ? 'ml-0 p-0 pl-3 sm:pl-5' : 'bg-surface border border-text-main/5 p-3 sm:p-5 md:p-7 rounded-2xl md:rounded-[2.5rem] shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/20'}`}
         >
-          <div className="flex gap-4 md:gap-10 h-full flex-1">
+          <div className="flex gap-3 sm:gap-5 h-full flex-1">
             {}
             <div className="flex flex-col items-center flex-shrink-0 relative">
               <Link to={`/profile/${ownerData?.username}`} className="relative z-10">
-                <div className={`rounded-xl md:rounded-2xl overflow-hidden border border-text-main/10 group-hover:border-primary/40 transition-all 
-                               ${isReply ? 'w-8 h-8 md:w-10 h-10' : 'w-12 h-12 md:w-14 h-14'}`}>
+                <div className={`rounded-xl overflow-hidden border border-text-main/10 group-hover:border-primary/40 transition-all 
+                               ${isReply ? 'w-8 h-8' : 'w-10 h-10 sm:w-12 sm:h-12'}`}>
                   <img src={ownerData?.avatar} alt={ownerData?.username} className="w-full h-full object-cover" />
                 </div>
                 {!isReply && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background" />}
@@ -223,7 +223,7 @@ export default function TweetCard({ tweet, index, onDelete, onUpdate, isReply = 
 
               {}
               <div className={`text-text-main leading-relaxed tracking-wide font-light break-words overflow-wrap-anywhere whitespace-pre-wrap
-                              ${isReply ? 'text-sm' : 'text-base md:text-lg'}`}>
+                              ${isReply ? 'text-sm' : 'text-sm sm:text-base'}`}>
                 {isEditing ? (
                   <div className="flex flex-col gap-3">
                     <textarea
